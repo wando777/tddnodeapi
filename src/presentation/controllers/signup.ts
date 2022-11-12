@@ -1,9 +1,16 @@
-/* eslint-disable @typescript-eslint/indent */
 export class SignUpController {
     handle(httpRequest: any): any {
-        return {
-            statusCode: 400,
-            body: new Error('Missing param: name')
+        if (httpRequest.body.name === undefined) {
+            return {
+                statusCode: 400,
+                body: new Error('Missing param: name')
+            }
+        }
+        if (!httpRequest.body.email) {
+            return {
+                statusCode: 400,
+                body: new Error('Missing param: email')
+            }
         }
     }
 }
