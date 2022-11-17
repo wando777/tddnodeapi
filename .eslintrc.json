@@ -8,6 +8,7 @@
         "@typescript-eslint/indent": "off",
         "@typescript-eslint/space-before-blocks": "off",
         "@typescript-eslint/space-before-function-paren": "off",
-        "eol-last": "off"
+        "eol-last": "off",
+        "@typescript-eslint/no-useless-constructor": "off"
     }
 }
