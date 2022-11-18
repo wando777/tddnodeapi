@@ -3,14 +3,18 @@ import { EmailValidator, SutTypes } from '../protocols'
 import { SignUpController } from './signup'
 import { EmailValidatorStubError } from '../mocks/EmailValidatorStubError'
 
-const makeSut = (): SutTypes => {
+const makeEmailValidator = (): EmailValidator => {
     // this is a mock response for testing valid parameters
     class EmailValidatorStub implements EmailValidator {
         isValid(email: string): boolean {
             return true
         }
     }
-    const emailValidatorStub = new EmailValidatorStub()
+    return new EmailValidatorStub()
+}
+
+const makeSut = (): SutTypes => {
+    const emailValidatorStub = makeEmailValidator()
     const sut = new SignUpController(emailValidatorStub) // injecting a dependecy to our implementation where it should return whats has been mocked.
     return {
         sut,
