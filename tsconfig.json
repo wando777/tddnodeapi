@@ -1,4 +1,4 @@
-{ 
+{
     "compilerOptions": {
         "outDir": "./dist",
         "module": "commonjs",
@@ -6,6 +6,9 @@
         "esModuleInterop": true,
         "allowJs": true,
         "strict": true,
-        "strictNullChecks": true
+        "strictNullChecks": true,
+        // "types": [
+        //     "node"
+        // ]
     }
 }
