@@ -1,6 +1,4 @@
-import { rejects } from 'assert'
-import { resolve } from 'path'
-import { Encrypter } from '../../protocols/encrypter'
+import { Encrypter } from './db-add-account-protocols'
 import { SutTypes } from '../../protocols/sut-types'
 import { DbAddAccount } from './db-add-account'
 
