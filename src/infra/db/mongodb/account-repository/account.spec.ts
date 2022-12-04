@@ -3,7 +3,6 @@ import { MongoHelper } from './helpers/mongo-helper'
 import { Collection } from 'mongodb'
 import env from '../../../../main/config/env'
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 let accountCollection: Collection
 
 describe('Account Mongo Repository', () => {
@@ -14,6 +13,11 @@ describe('Account Mongo Repository', () => {
     afterAll(async () => {
         await MongoHelper.disconnect()
     });
+
+    beforeEach(async () => {
+        accountCollection = await MongoHelper.getCollection('accounts')
+        await accountCollection.deleteMany({})
+    })
 
     const makeSut = (): AccountMongoRepository => {
         return new AccountMongoRepository();
