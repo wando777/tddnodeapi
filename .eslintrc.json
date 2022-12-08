@@ -10,6 +10,7 @@
         "@typescript-eslint/space-before-function-paren": "off",
         "eol-last": "off",
         "@typescript-eslint/no-useless-constructor": "off",
-        "@typescript-eslint/semi": "off"
+        "@typescript-eslint/semi": "off",
+        "@typescript-eslint/no-misused-promises": "off"
     }
 }
