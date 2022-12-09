@@ -24,8 +24,8 @@ export const MongoHelper2 = {
 export const MongoHelper = {
     // Aqui eu defino que as variaveis do objeto tem o valor null e o tipo delas são MongoClient/string,
     // pois essa é a unica forma de fazer isso dentro de uma const
-    client: null as unknown as MongoClient,
-    uri: null as unknown as string,
+    client: null as MongoClient,
+    uri: null as string,
 
     async connect(uri: string): Promise<void> {
         this.uri = uri
@@ -34,9 +34,13 @@ export const MongoHelper = {
 
     async disconnect(): Promise<void> {
         await this.client.close()
+        this.client = null
     },
 
     async getCollection(name: string): Promise<Collection> {
+        if (!this.client) {
+            await this.connect(this.uri)
+        }
         return this.client.db().collection(name)
     },
 
