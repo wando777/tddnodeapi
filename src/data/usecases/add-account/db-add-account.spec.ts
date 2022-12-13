@@ -14,13 +14,7 @@ const makeEncrypter = (): Encrypter => {
 const makeAddAccountRepository = (): AddAccountRepository => {
     class AddAccountRepositoryStub implements AddAccountRepository {
         async add(accountData: AddAccountModel): Promise<AccountModel> {
-            const fakeAccount = {
-                id: 'valid_id',
-                name: 'valid_name',
-                email: 'valid_email',
-                password: 'hashed_password'
-            }
-            return await new Promise(resolve => resolve(fakeAccount))
+            return await new Promise(resolve => resolve(makeFakeAccount()))
         }
     }
     return new AddAccountRepositoryStub()
@@ -37,38 +31,36 @@ const makeSut = (): SutTypes => {
     }
 }
 
+const makeFakeAccount = (): AccountModel => ({
+    id: 'valid_id',
+    name: 'valid_name',
+    email: 'valid_email',
+    password: 'hashed_password'
+})
+
+const makeFakeAccountData = (): AddAccountModel => ({
+    name: 'valid_name',
+    email: 'valid_email',
+    password: 'valid_password'
+})
+
 describe('DbAddAccount Usecase', () => {
     it('Should call Encrypter with correct password', async () => {
         const { sut, encrypterStub } = makeSut();
         const encryptSpy = jest.spyOn(encrypterStub, 'encrypt')
-        const accountData = {
-            name: 'valid_name',
-            email: 'valid_email',
-            password: 'valid_password'
-        }
-        await sut.add(accountData)
-        expect(encryptSpy).toHaveBeenCalledWith(accountData.password)
+        await sut.add(makeFakeAccountData())
+        expect(encryptSpy).toHaveBeenCalledWith(makeFakeAccountData().password)
     })
     it('Should throw and error if Encrypter has errors', async () => {
         const { sut, encrypterStub } = makeSut();
         jest.spyOn(encrypterStub, 'encrypt').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
-        const accountData = {
-            name: 'valid_name',
-            email: 'valid_email',
-            password: 'valid_password'
-        }
-        const accountPromise = sut.add(accountData)
+        const accountPromise = sut.add(makeFakeAccountData())
         await expect(accountPromise).rejects.toThrow()
     })
     it('Should call AddAccountRepository with correct values', async () => {
         const { sut, addAccountRepositoryStub } = makeSut();
         const addSpy = jest.spyOn(addAccountRepositoryStub, 'add')
-        const accountData = {
-            name: 'valid_name',
-            email: 'valid_email',
-            password: 'valid_password'
-        }
-        await sut.add(accountData)
+        await sut.add(makeFakeAccountData())
         expect(addSpy).toHaveBeenCalledWith({
             name: 'valid_name',
             email: 'valid_email',
@@ -78,27 +70,12 @@ describe('DbAddAccount Usecase', () => {
     it('Should throw and error if AddAccountRepository has errors', async () => {
         const { sut, addAccountRepositoryStub } = makeSut();
         jest.spyOn(addAccountRepositoryStub, 'add').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
-        const accountData = {
-            name: 'valid_name',
-            email: 'valid_email',
-            password: 'valid_password'
-        }
-        const accountPromise = sut.add(accountData)
+        const accountPromise = sut.add(makeFakeAccountData())
         await expect(accountPromise).rejects.toThrow()
     })
     it('Should return an account on success', async () => {
         const { sut } = makeSut();
-        const accountData = {
-            name: 'valid_name',
-            email: 'valid_email',
-            password: 'valid_password'
-        }
-        const accountPromisse = await sut.add(accountData)
-        expect(accountPromisse).toEqual({
-            id: 'valid_id',
-            name: 'valid_name',
-            email: 'valid_email',
-            password: 'hashed_password'
-        })
+        const accountPromisse = await sut.add(makeFakeAccountData())
+        expect(accountPromisse).toEqual(makeFakeAccount())
     })
 })
