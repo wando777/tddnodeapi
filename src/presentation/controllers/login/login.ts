@@ -4,6 +4,9 @@ import { Controller, HttpRequest, HttpResponse } from '../singup/signup-protocol
 
 export class LoginController implements Controller {
     async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
-        return await new Promise(resolve => resolve(badRequest(new MissingParamError('email'))))
+        if (!httpRequest.body.email) {
+            return await new Promise(resolve => resolve(badRequest(new MissingParamError('email'))))
+        }
+        return await new Promise(resolve => resolve(badRequest(new MissingParamError('password'))))
     }
 }
