@@ -1,12 +1,8 @@
 import { InvalidParamError, MissingParamError } from '../../errors'
 import { badRequest } from '../../helpers/http-helper'
 import { EmailValidator, HttpRequest } from '../singup/signup-protocols'
+import { SutTypesLogin } from '../../protocols'
 import { LoginController } from './login'
-
-interface SutTypes {
-    sut: LoginController
-    emailValidatorStub: EmailValidator
-}
 
 const makeEmailValidator = (): EmailValidator => {
     class EmailValidatorStub implements EmailValidator {
@@ -24,7 +20,7 @@ const makeFakeRequest = (): HttpRequest => ({
     }
 })
 
-const makeSut = (): SutTypes => {
+const makeSut = (): SutTypesLogin => {
     const emailValidatorStub = makeEmailValidator()
     const sut = new LoginController(emailValidatorStub)
     return { sut, emailValidatorStub }
