@@ -142,15 +142,7 @@ describe('SignUp Controller', () => {
         jest.spyOn(emailValidatorStub, 'isValid').mockImplementationOnce(() => {
             throw new Error()
         })
-        const httpRequest = {
-            body: {
-                name: 'foo_name',
-                email: 'any_email@mail.com',
-                password: 'any_password',
-                passwordConfirmation: 'any_password'
-            }
-        }
-        const httpResponse = await sut.handle(httpRequest)
+        const httpResponse = await sut.handle(makeFakeRequest())
         expect(httpResponse).toEqual(serverError(new ServerError('')))
     })
 
