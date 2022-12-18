@@ -1,6 +1,6 @@
 import { Authentication } from '../../../domain/usecases/authentication';
-import { InvalidParamError, MissingParamError } from '../../errors';
-import { badRequest, serverError } from '../../helpers/http-helper';
+import { InvalidParamError, MissingParamError, UnauthorizedError } from '../../errors';
+import { badRequest, serverError, unauthorized } from '../../helpers/http-helper';
 import { Controller, EmailValidator, HttpRequest, HttpResponse } from '../singup/signup-protocols';
 
 export class LoginController implements Controller {
@@ -24,10 +24,10 @@ export class LoginController implements Controller {
             if (!isEmailValid) {
                 return badRequest(new InvalidParamError('email'))
             }
-            await this.authentication.auth(email, password)
-            // if (!isUserAuthenticated) {
-            //     return serverError(new InvalidParamError('test'))
-            // }
+            const acessToken = await this.authentication.auth(email, password)
+            if (!acessToken) {
+                return unauthorized()
+            }
         } catch (error: any) {
             return serverError(error)
         }
