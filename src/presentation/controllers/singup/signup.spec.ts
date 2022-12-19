@@ -1,5 +1,5 @@
 import { MissingParamError, InvalidParamError, ServerError } from '../../errors'
-import { EmailValidator, SutTypes, AddAccount, AddAccountModel, AccountModel, HttpRequest } from './signup-protocols'
+import { EmailValidator, SutTypes, AddAccount, AddAccountModel, AccountModel, HttpRequest, Validation } from './signup-protocols'
 import { SignUpController } from './signup'
 import { badRequest, ok, serverError } from '../../helpers/http-helper'
 
@@ -23,14 +23,26 @@ const makeAddAccount = (): AddAccount => {
     return new AddAccountStub()
 }
 
+const makeValidation = (): Validation => {
+    // this is a mock response for testing valid parameters
+    class ValidationStub implements Validation {
+        validate(input: any): Error {
+            return null
+        }
+    }
+    return new ValidationStub()
+}
+
 const makeSut = (): SutTypes => {
+    const validationStub = makeValidation()
     const emailValidatorStub = makeEmailValidator()
     const addAccountStub = makeAddAccount()
-    const sut = new SignUpController(emailValidatorStub, addAccountStub) // injecting a dependecy to our implementation where it should return whats has been mocked.
+    const sut = new SignUpController(emailValidatorStub, addAccountStub, validationStub) // injecting a dependecy to our implementation where it should return whats has been mocked.
     return {
         sut,
         emailValidatorStub,
-        addAccountStub
+        addAccountStub,
+        validationStub
     }
 }
 
@@ -170,5 +182,13 @@ describe('SignUp Controller', () => {
         const { sut } = makeSut()
         const httpResponse = await sut.handle(makeFakeRequest())
         expect(httpResponse).toEqual(ok(makeFakeAccount()))
+    })
+
+    it('Should call Validation with correct value', async () => {
+        const { sut, validationStub } = makeSut()
+        const addSpy = jest.spyOn(validationStub, 'validate')
+        const httpRequest = makeFakeRequest()
+        await sut.handle(httpRequest)
+        expect(addSpy).toHaveBeenCalledWith(httpRequest.body)
     })
 })
