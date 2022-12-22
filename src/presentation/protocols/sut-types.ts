@@ -25,5 +25,5 @@ export interface SutTypesEmailValidation {
 
 export interface SutTypesValidation {
     sut: ValidationComposite
-    validationStub: Validation
+    validationStubs: Validation[]
 }
