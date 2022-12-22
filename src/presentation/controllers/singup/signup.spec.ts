@@ -1,17 +1,7 @@
 import { MissingParamError, ServerError } from '../../errors'
-import { EmailValidator, SutTypes, AddAccount, AddAccountModel, AccountModel, HttpRequest, Validation } from './signup-protocols'
+import { SutTypes, AddAccount, AddAccountModel, AccountModel, HttpRequest, Validation } from './signup-protocols'
 import { SignUpController } from './signup'
 import { badRequest, ok, serverError } from '../../helpers/http-helper'
-
-const makeEmailValidator = (): EmailValidator => {
-    // this is a mock response for testing valid parameters
-    class EmailValidatorStub implements EmailValidator {
-        isValid(email: string): boolean {
-            return true
-        }
-    }
-    return new EmailValidatorStub()
-}
 
 const makeAddAccount = (): AddAccount => {
     // this is a mock response for testing valid parameters
@@ -35,12 +25,10 @@ const makeValidation = (): Validation => {
 
 const makeSut = (): SutTypes => {
     const validationStub = makeValidation()
-    const emailValidatorStub = makeEmailValidator()
     const addAccountStub = makeAddAccount()
     const sut = new SignUpController(addAccountStub, validationStub) // injecting a dependecy to our implementation where it should return whats has been mocked.
     return {
         sut,
-        emailValidatorStub,
         addAccountStub,
         validationStub
     }
