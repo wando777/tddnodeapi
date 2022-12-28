@@ -1,7 +1,7 @@
 import { MissingParamError, ServerError } from '../../errors'
 import { SutTypes, AddAccount, AddAccountModel, AccountModel, HttpRequest, Validation } from './signup-protocols'
 import { SignUpController } from './signup'
-import { badRequest, ok, serverError } from '../../helpers/http-helper'
+import { badRequest, ok, serverError } from '../../helpers/http/http-helper'
 
 const makeAddAccount = (): AddAccount => {
     // this is a mock response for testing valid parameters

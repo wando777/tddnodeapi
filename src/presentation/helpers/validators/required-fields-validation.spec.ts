@@ -1,5 +1,5 @@
 import { MissingParamError } from '../../errors'
-import { RequiredFieldValidation } from './requeired-field-validation'
+import { RequiredFieldValidation } from './requiered-field-validation'
 
 const makeFakeRequest = (): string => {
     const fieldName = 'any_field'
