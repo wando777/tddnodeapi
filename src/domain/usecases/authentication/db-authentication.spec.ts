@@ -1,3 +1,4 @@
+import { resolve } from 'path'
 import { HashComparer } from '../../../data/protocols/criptography/hash-comparer'
 import { LoadAccountByEmailRepository } from '../../../data/protocols/db/load-account-by-email-repository'
 import { AccountModel } from '../../models/account'
@@ -76,5 +77,11 @@ describe('DbAuthentication UseCase', () => {
         jest.spyOn(hashComparerStub, 'compare').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
         const promise = sut.auth(makeFakeAuthentication())
         await expect(promise).rejects.toThrow()
+    })
+    test('Should return null if HashComparer returns false', async () => {
+        const { sut, hashComparerStub } = makeSut()
+        jest.spyOn(hashComparerStub, 'compare').mockReturnValueOnce(new Promise(resolve => resolve(false)))
+        const accessToken = await sut.auth(makeFakeAuthentication())
+        expect(accessToken).toBeNull()
     })
 })
