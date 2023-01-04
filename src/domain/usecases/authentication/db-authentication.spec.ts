@@ -1,5 +1,6 @@
 import { resolve } from 'path'
 import { HashComparer } from '../../../data/protocols/criptography/hash-comparer'
+import { TokenGenerator } from '../../../data/protocols/criptography/token-generator'
 import { LoadAccountByEmailRepository } from '../../../data/protocols/db/load-account-by-email-repository'
 import { AccountModel } from '../../models/account'
 import { AuthenticationModel } from '../authentication'
@@ -28,21 +29,32 @@ const makeLoadAccountByEmailRepository = (): LoadAccountByEmailRepository => {
 
 const makeHashComparer = (): HashComparer => {
     class HashComparerStub implements HashComparer {
-        async compare (value: string, hash: string): Promise<boolean> {
+        async compare(value: string, hash: string): Promise<boolean> {
             return await new Promise(resolve => resolve(true))
         }
     }
     return new HashComparerStub()
 }
 
+const makeTokenGenerator = (): TokenGenerator => {
+    class TokenGeneratorStub implements TokenGenerator {
+        async generate(id: string): Promise<string> {
+            return await new Promise(resolve => resolve('any_token'))
+        }
+    }
+    return new TokenGeneratorStub()
+}
+
 const makeSut = (): SutTypesDbAuthentication => {
+    const tokenGeneratorStub = makeTokenGenerator()
     const hashComparerStub = makeHashComparer()
     const loadAccountByEmailRepositoryStub = makeLoadAccountByEmailRepository()
-    const sut = new DbAuthentication(loadAccountByEmailRepositoryStub, hashComparerStub)
+    const sut = new DbAuthentication(loadAccountByEmailRepositoryStub, hashComparerStub, tokenGeneratorStub)
     return ({
         sut,
         loadAccountByEmailRepositoryStub,
-        hashComparerStub
+        hashComparerStub,
+        tokenGeneratorStub
     })
 }
 
@@ -53,7 +65,6 @@ describe('DbAuthentication UseCase', () => {
         await sut.auth(makeFakeAuthentication())
         expect(loadSpy).toHaveBeenCalledWith('any_email@mail.com')
     })
-
     test('Should throws an exception if LoadAccountByEmailRepository throws', async () => {
         const { sut, loadAccountByEmailRepositoryStub } = makeSut()
         jest.spyOn(loadAccountByEmailRepositoryStub, 'load').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
@@ -83,5 +94,11 @@ describe('DbAuthentication UseCase', () => {
         jest.spyOn(hashComparerStub, 'compare').mockReturnValueOnce(new Promise(resolve => resolve(false)))
         const accessToken = await sut.auth(makeFakeAuthentication())
         expect(accessToken).toBeNull()
+    })
+    test('Should call TokenGenerator with correct id', async () => {
+        const { sut, tokenGeneratorStub } = makeSut()
+        const generateSpy = jest.spyOn(tokenGeneratorStub, 'generate')
+        await sut.auth(makeFakeAuthentication())
+        expect(generateSpy).toHaveBeenCalledWith(makeFakeAccount().id) // It ensures that token generator should be called with the expected ID.
     })
 })
