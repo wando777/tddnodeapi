@@ -32,14 +32,17 @@ describe('Bcrypt Adapter', () => {
         const hash = await sut.hash(anyValue)
         expect(hash).toBe(hashMocked)
     })
-    // it('Should throw an error if bcrypt has errors', async () => {
-    //     const sut = makeSut()
-    //     // jest.spyOn(bcrypt, 'hash').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
-    //     jest.spyOn(bcrypt, 'hash').mockReturnValueOnce(await new Promise((resolve, reject) => reject(new Error())))
-    //     const anyValue = 'any_value'
-    //     const promise = sut.hash(anyValue)
-    //     await expect(promise).rejects.toThrow()
-    // })
+    it('Should throw an error if bcrypt has errors', async () => {
+        const sut = makeSut()
+        // jest.spyOn(bcrypt, 'hash').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
+        // jest.spyOn(bcrypt, 'hash').mockReturnValueOnce(await new Promise((resolve, reject) => reject(new Error())))
+        jest.spyOn(bcrypt, 'hash').mockImplementationOnce(async () => {
+            return await new Promise((_resolve, reject) => reject(new Error()));
+        });
+        const anyValue = 'any_value'
+        const promise = sut.hash(anyValue)
+        await expect(promise).rejects.toThrow()
+    })
     it('Should call compare with correct values', async () => {
         const sut = makeSut()
         const compareSpy = jest.spyOn(bcrypt, 'compare')
@@ -52,5 +55,17 @@ describe('Bcrypt Adapter', () => {
         const anyValue = 'any_value'
         const compare = await sut.compare(anyValue, 'any_hash')
         expect(compare).toBe(true)
+    })
+    it('Should return false when compare fails', async () => {
+        const sut = makeSut()
+        // When trying to mock a value with a new Promise, It required a type 'void | PromiseLike<void>, so in this case I need to mock the Promise type as boolean.
+        const hashSpy = jest.spyOn(bcrypt, 'compare') as unknown as jest.Mock<
+            ReturnType<(key: boolean) => Promise<boolean>>,
+            Parameters<(key: boolean) => Promise<boolean>>
+        >
+        hashSpy.mockReturnValueOnce(new Promise(_resolve => _resolve(false)))
+        const anyValue = 'any_value'
+        const compare = await sut.compare(anyValue, 'any_hash')
+        expect(compare).toBe(false)
     })
 })
