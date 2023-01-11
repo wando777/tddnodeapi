@@ -1,5 +1,4 @@
 import bcrypt from 'bcrypt'
-import { serverError } from '../../presentation/helpers/http/http-helper'
 import { BcryptAdapter } from './bcrypt-adapter'
 
 const hashMocked = 'hashMocked'
