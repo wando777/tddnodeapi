@@ -1,5 +1,5 @@
 import { AccountMongoRepository } from './account'
-import { MongoHelper } from './helpers/mongo-helper'
+import { MongoHelper } from '../helpers/mongo-helper'
 import { Collection } from 'mongodb'
 import env from '../../../../main/config/env'
 
