@@ -1,6 +1,6 @@
 import { MissingParamError, ServerError } from '../../errors'
-import { SutTypes, AddAccount, AddAccountModel, AccountModel, HttpRequest, Validation } from './signup-protocols'
-import { SignUpController } from './signup'
+import { SutTypes, AddAccount, AddAccountModel, AccountModel, HttpRequest, Validation } from './signup-controller-protocols'
+import { SignUpController } from './signup-controller'
 import { badRequest, ok, serverError } from '../../helpers/http/http-helper'
 
 const makeAddAccount = (): AddAccount => {
