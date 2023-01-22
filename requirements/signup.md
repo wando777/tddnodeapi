@@ -1,6 +1,6 @@
-# Cadastro
+# Register
 
-> ## Sucessful Cases
+> ## Successful Cases
 
 1. ✅ Recebe uma requisição do tipo **POST** na rota **/api/signup**
 2. ✅ Valida dados obrigatórios **name**, **email**, **password** e **passwordConfirmation**

@@ -1,6 +1,6 @@
 # Login
 
-> ## Sucessful Cases
+> ## Successful Cases
 
 1. ✅ Recebe uma requisição do tipo **POST** na rota **/api/login**
 2. ✅ Valida dados obrigatórios **email** e **password**
