@@ -1,7 +1,7 @@
-import { MissingParamError, ServerError } from '../../errors'
+import { MissingParamError, ParamInUseError, ServerError } from '../../errors'
 import { SutTypes, AddAccount, AddAccountModel, AccountModel, HttpRequest, Validation, Authentication, AuthenticationModel } from './signup-controller-protocols'
 import { SignUpController } from './signup-controller'
-import { badRequest, ok, serverError } from '../../helpers/http/http-helper'
+import { badRequest, forbidden, ok, serverError } from '../../helpers/http/http-helper'
 
 const makeAuthentication = (): Authentication => {
     class AuthenticationStub implements Authentication {
@@ -143,7 +143,6 @@ describe('SignUp Controller', () => {
             password: makeFakeRequest().body.password
         })
     })
-
     it('Should return 500 if AddAccount throws an exception', async () => {
         const { sut, addAccountStub } = makeSut()
         jest.spyOn(addAccountStub, 'add').mockImplementationOnce(async () => {
@@ -152,13 +151,23 @@ describe('SignUp Controller', () => {
         const httpResponse = await sut.handle(makeFakeRequest())
         expect(httpResponse).toEqual(serverError(new ServerError('')))
     })
-
     it('Should return 200 if a valid Account is provided and authenticated', async () => {
         const { sut } = makeSut()
         const httpResponse = await sut.handle(makeFakeRequest())
         expect(httpResponse).toEqual(ok({ accessToken: 'any_token' }))
     })
-
+    it('Should return 403 if AddAccount returns null', async () => {
+        const { sut, addAccountStub } = makeSut()
+        // jest.spyOn(addAccountStub, 'add').mockReturnValueOnce(new Promise(resolve => resolve(null)))
+        // When trying to mock a value with a new Promise, It required a type 'void | PromiseLike<null>, so in this case I need to mock the Promise type as null.
+        const addAccountStubSpy = jest.spyOn(addAccountStub, 'add') as unknown as jest.Mock<
+            ReturnType<(key: null) => Promise<null>>,
+            Parameters<(key: null) => Promise<null>>
+        >
+        addAccountStubSpy.mockReturnValueOnce(new Promise(_resolve => _resolve(null)))
+        const httpResponse = await sut.handle(makeFakeRequest())
+        expect(httpResponse).toEqual(forbidden(new ParamInUseError('email')))
+    })
     it('Should call Validation with correct value', async () => {
         const { sut, validationStub } = makeSut()
         const addSpy = jest.spyOn(validationStub, 'validate')
@@ -166,7 +175,6 @@ describe('SignUp Controller', () => {
         await sut.handle(httpRequest)
         expect(addSpy).toHaveBeenCalledWith(httpRequest.body)
     })
-
     it('Should return 400 if a validation returns an error', async () => {
         const { sut, validationStub } = makeSut()
         jest.spyOn(validationStub, 'validate').mockReturnValueOnce(new MissingParamError('any_field'))
