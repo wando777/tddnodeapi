@@ -10,6 +10,7 @@ export interface SutTypes {
     sut: SignUpController
     addAccountStub: AddAccount
     validationStub: Validation
+    authenticationStub: Authentication
 }
 
 export interface SutTypesLogin {
