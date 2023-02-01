@@ -1,5 +1,5 @@
-import { ParamInUseError } from '../../errors'
-import { badRequest, forbidden, ok, serverError } from '../../helpers/http/http-helper'
+import { ParamInUseError } from '../../../errors'
+import { badRequest, forbidden, ok, serverError } from '../../../helpers/http/http-helper'
 import { Controller, HttpResponse, HttpRequest, AddAccount, Validation, Authentication } from './signup-controller-protocols'
 
 export class SignUpController implements Controller {
