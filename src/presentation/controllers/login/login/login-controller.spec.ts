@@ -1,7 +1,7 @@
-import { MissingParamError, ServerError } from '../../errors'
-import { badRequest, serverError, unauthorized, ok } from '../../helpers/http/http-helper'
+import { MissingParamError, ServerError } from '../../../errors'
+import { badRequest, serverError, unauthorized, ok } from '../../../helpers/http/http-helper'
 import { Authentication, AuthenticationModel, HttpRequest, Validation } from './login-controller-protocols'
-import { SutTypesLogin } from '../../protocols'
+import { SutTypesLogin } from '../../../protocols'
 import { LoginController } from './login-controller'
 
 const makeAuthentication = (): Authentication => {
