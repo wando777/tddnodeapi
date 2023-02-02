@@ -1,10 +1,11 @@
 import { Authentication } from '../../domain/usecases/authentication'
-import { LoginController } from '../controllers/login/login-controller'
-import { SignUpController } from '../controllers/singup/signup-controller'
-import { AddAccount, Validation } from '../controllers/singup/signup-controller-protocols'
 import { EmailValidation } from '../../validation/validators/email-validation'
 import { ValidationComposite } from '../../validation/validators/validation-composite'
 import { EmailValidator } from '../../validation/protocols/email-validator'
+import { SignUpController } from '../controllers/login/singup/signup-controller'
+import { AddAccount } from '../../domain/usecases/add-account'
+import { LoginController } from '../controllers/login/login/login-controller'
+import { Validation } from './validation'
 
 export interface SutTypes {
     sut: SignUpController
