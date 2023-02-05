@@ -5,7 +5,7 @@ export class DbAddSurvey implements AddSurvey {
     private readonly addSurveyRepository: AddSurveyRepository
   ) { }
 
-  async add(surveytData: AddSurveyModel): Promise<void> {
-    await this.addSurveyRepository.add(surveytData)
+  async add(surveyData: AddSurveyModel): Promise<void> {
+    await this.addSurveyRepository.add(surveyData)
   }
 }
