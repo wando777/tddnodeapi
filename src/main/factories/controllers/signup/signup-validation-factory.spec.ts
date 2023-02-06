@@ -15,7 +15,7 @@ const makeEmailValidator = (): EmailValidator => {
 }
 
 describe('SignUPValidation Factory', () => {
-    it('Should ValidationComposite with all validations', () => {
+    it('Should call ValidationComposite with all validations', () => {
         makeSignUpValidation()
         const validations: Validation[] = []
         const fields = ['name', 'email', 'password', 'passwordConfirmation']
