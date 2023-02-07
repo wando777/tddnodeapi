@@ -1,4 +1,4 @@
-import { forbidden } from '../helpers/http/http-helper'
+import { forbidden, ok } from '../helpers/http/http-helper'
 import { HttpRequest } from '../protocols'
 import { AccessDeniedError } from '../errors/index'
 import { AuthMiddleware } from './auth-middleware'
@@ -14,7 +14,12 @@ const makeLoadAccountByToken = (): LoadAccountByToken => {
   return new LoadAccountByTokenStub()
 }
 
-const makeStut = (): any => {
+interface SutTypes {
+  sut: AuthMiddleware
+  loadAccountByTokenStub: LoadAccountByToken
+}
+
+const makeStut = (): SutTypes => {
   const loadAccountByTokenStub = makeLoadAccountByToken()
   const sut = new AuthMiddleware(loadAccountByTokenStub)
   return {
@@ -50,5 +55,17 @@ describe('Auth Middleware', () => {
     const loadSpy = jest.spyOn(loadAccountByTokenStub, 'load')
     await sut.handle(makeFakeHttpRequest())
     expect(loadSpy).toHaveBeenCalledWith(makeFakeHttpRequest().headers?.['x-access-token'])
+  })
+  it('Should return 403 if LoadAccountByToken returns null', async () => {
+    const { sut, loadAccountByTokenStub } = makeStut()
+    jest.spyOn(loadAccountByTokenStub, 'load')
+      .mockReturnValueOnce(new Promise((resolve) => (resolve(null))))
+    const httpResponse = await sut.handle(makeFakeHttpRequest())
+    expect(httpResponse).toEqual(forbidden(new AccessDeniedError()))
+  })
+  it('Should return 200 if LoadAccountByToken returns an userId', async () => {
+    const { sut } = makeStut()
+    const httpResponse = await sut.handle(makeFakeHttpRequest())
+    expect(httpResponse).toEqual(ok({ userId: makeFakeAccount().id }))
   })
 })
