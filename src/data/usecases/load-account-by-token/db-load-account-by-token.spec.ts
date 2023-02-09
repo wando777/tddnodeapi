@@ -25,7 +25,7 @@ const makeDecrypter = (): Decrypter => {
 
 const makeLoadAccountByTokenRepository = (): LoadAccountByTokenRepository => {
   class LoadAccountByTokenRepositoryStub implements LoadAccountByTokenRepository {
-    async loadByToken(token: string): Promise<AccountModel> {
+    async loadByToken(token: string, role?: string): Promise<AccountModel> {
       return await new Promise(resolve => resolve(makeFakeAccount()))
     }
   }
@@ -60,20 +60,20 @@ describe('DbLoadAccountByToken UseCase', () => {
     const { sut, decrypterStub } = makeSut()
     jest.spyOn(decrypterStub, 'decrypt').mockReturnValueOnce(new Promise(resolve => resolve(null)))
     const promise = await sut.load(makeFakeAuthentication().token, makeFakeAuthentication().role)
-    await expect(promise).toBeNull()
+    expect(promise).toBeNull()
   })
-  // test('Should return null if LoadAccountByEmailRepository returns null', async () => {
-  //     const { sut, loadAccountByEmailRepositoryStub } = makeSut()
-  //     jest.spyOn(loadAccountByEmailRepositoryStub, 'loadByEmail').mockReturnValueOnce(null)
-  //     const accessToken = await sut.auth(makeFakeAuthentication())
-  //     expect(accessToken).toBeNull()
-  // })
-  // test('Should call HashCompare with correct values', async () => {
-  //     const { sut, hashComparerStub } = makeSut()
-  //     const compareSpy = jest.spyOn(hashComparerStub, 'compare')
-  //     await sut.auth(makeFakeAuthentication())
-  //     expect(compareSpy).toHaveBeenCalledWith(makeFakeAuthentication().password, makeFakeAccount().password) // It compares the password sent by the user on the UI (makeFakeAuthentication) with what is recorded in the database (makeFakeAccount)
-  // })
+  test('Should call LoadAccountByTokenRepository with correct values', async () => {
+    const { sut, loadAccountByTokenRepositoryStub } = makeSut()
+    const loadByTokenSpy = jest.spyOn(loadAccountByTokenRepositoryStub, 'loadByToken')
+    await sut.load(makeFakeAuthentication().token, makeFakeAuthentication().role)
+    expect(loadByTokenSpy).toHaveBeenCalledWith(makeFakeAuthentication().token, makeFakeAuthentication().role)
+  })
+  test('Should returns null if LoadAccountByTokenRepository also returns null', async () => {
+    const { sut, loadAccountByTokenRepositoryStub } = makeSut()
+    jest.spyOn(loadAccountByTokenRepositoryStub, 'loadByToken').mockReturnValueOnce(new Promise(resolve => resolve(null)))
+    const promise = await sut.load(makeFakeAuthentication().token, makeFakeAuthentication().role)
+    expect(promise).toBeNull()
+  })
   // test('Should throw if HashComparer throws', async () => {
   //     const { sut, hashComparerStub } = makeSut()
   //     jest.spyOn(hashComparerStub, 'compare').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
