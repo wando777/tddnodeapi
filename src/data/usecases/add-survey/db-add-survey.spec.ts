@@ -42,5 +42,5 @@ describe('DbAddSurvey Usecase', () => {
     // })
     const accountPromise = sut.add(makeFakeSurvey())
     await expect(accountPromise).rejects.toThrow()
-})
+  })
 })

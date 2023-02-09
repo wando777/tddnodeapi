@@ -23,18 +23,24 @@ const makeDecrypter = (): Decrypter => {
   return new DecrypterStub()
 }
 
-const makeLoadAccountByEmailRepository = (): LoadAccountByTokenRepository => {
-  class LoadAccountByEmailRepositoryStub implements LoadAccountByTokenRepository {
+const makeLoadAccountByTokenRepository = (): LoadAccountByTokenRepository => {
+  class LoadAccountByTokenRepositoryStub implements LoadAccountByTokenRepository {
     async loadByToken(token: string): Promise<AccountModel> {
       return await new Promise(resolve => resolve(makeFakeAccount()))
     }
   }
-  return new LoadAccountByEmailRepositoryStub()
+  return new LoadAccountByTokenRepositoryStub()
 }
 
-const makeSut = (): any => {
+interface SutTypes {
+  sut: DbLoadAccountByToken
+  loadAccountByTokenRepositoryStub: LoadAccountByTokenRepository
+  decrypterStub: Decrypter
+}
+
+const makeSut = (): SutTypes => {
   const decrypterStub = makeDecrypter()
-  const loadAccountByTokenRepositoryStub = makeLoadAccountByEmailRepository()
+  const loadAccountByTokenRepositoryStub = makeLoadAccountByTokenRepository()
   const sut = new DbLoadAccountByToken(loadAccountByTokenRepositoryStub, decrypterStub)
   return ({
     sut,
@@ -47,15 +53,15 @@ describe('DbLoadAccountByToken UseCase', () => {
   test('Should call Decrypter with correct values', async () => {
     const { sut, decrypterStub } = makeSut()
     const decryptSpy = jest.spyOn(decrypterStub, 'decrypt')
-    await sut.load(makeFakeAuthentication().token)
+    await sut.load(makeFakeAuthentication().token, makeFakeAuthentication().role)
     expect(decryptSpy).toHaveBeenCalledWith(makeFakeAuthentication().token)
   })
-  // test('Should throws an exception if LoadAccountByEmailRepository throws', async () => {
-  //     const { sut, loadAccountByEmailRepositoryStub } = makeSut()
-  //     jest.spyOn(loadAccountByEmailRepositoryStub, 'loadByEmail').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
-  //     const promise = sut.auth(makeFakeAuthentication())
-  //     await expect(promise).rejects.toThrow()
-  // })
+  test('Should returns null if Decrypter also returns null', async () => {
+    const { sut, decrypterStub } = makeSut()
+    jest.spyOn(decrypterStub, 'decrypt').mockReturnValueOnce(new Promise(resolve => resolve(null)))
+    const promise = await sut.load(makeFakeAuthentication().token, makeFakeAuthentication().role)
+    await expect(promise).toBeNull()
+  })
   // test('Should return null if LoadAccountByEmailRepository returns null', async () => {
   //     const { sut, loadAccountByEmailRepositoryStub } = makeSut()
   //     jest.spyOn(loadAccountByEmailRepositoryStub, 'loadByEmail').mockReturnValueOnce(null)
