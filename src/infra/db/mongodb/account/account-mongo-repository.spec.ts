@@ -57,6 +57,40 @@ describe('Account Mongo Repository', () => {
             expect(account).toBeFalsy()
         })
     })
+    describe('loadByToken()', () => {
+        it('Should return an account on loadByToken() without role', async () => {
+            const sut = makeSut()
+            await accountCollection.insertOne(Object
+                .assign({}, makeFakeAccountTest(), { accessToken: 'any_token' })
+            )
+            const account = await sut.loadByToken('any_token')
+            expect(account).toBeTruthy()
+            expect(account.id).toBeTruthy()
+            expect(account.name).toBe(makeFakeAccountTest().name)
+            expect(account.email).toBe(makeFakeAccountTest().email)
+            expect(account.password).toBe(makeFakeAccountTest().password)
+        })
+        it('Should return an account on loadByToken() with role on success', async () => {
+            const sut = makeSut()
+            await accountCollection.insertOne(Object
+                .assign({}, makeFakeAccountTest(), {
+                    accessToken: 'any_token',
+                    role: 'any_role'
+                })
+            )
+            const account = await sut.loadByToken('any_token', 'any_role')
+            expect(account).toBeTruthy()
+            expect(account.id).toBeTruthy()
+            expect(account.name).toBe(makeFakeAccountTest().name)
+            expect(account.email).toBe(makeFakeAccountTest().email)
+            expect(account.password).toBe(makeFakeAccountTest().password)
+        })
+        it('Should return null if loadByToken fails', async () => {
+            const sut = makeSut()
+            const account = await sut.loadByToken('any_token', 'any_role')
+            expect(account).toBeFalsy()
+        })
+    })
     describe('updateAccessToken()', () => {
         it('Should update the account accessToken on updateAccessToken success', async () => {
             const sut = makeSut()
