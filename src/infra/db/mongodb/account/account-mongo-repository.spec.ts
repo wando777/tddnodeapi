@@ -29,40 +29,45 @@ describe('Account Mongo Repository', () => {
     const makeSut = (): AccountMongoRepository => {
         return new AccountMongoRepository();
     }
-
-    it('Should return an account on add success', async () => {
-        const sut = makeSut()
-        const account = await sut.add(makeFakeAccountTest())
-        expect(account).toBeTruthy()
-        expect(account.id).toBeTruthy()
-        expect(account.name).toBe(makeFakeAccountTest().name)
-        expect(account.email).toBe(makeFakeAccountTest().email)
-        expect(account.password).toBe(makeFakeAccountTest().password)
+    describe('add()', () => {
+        it('Should return an account on add success', async () => {
+            const sut = makeSut()
+            const account = await sut.add(makeFakeAccountTest())
+            expect(account).toBeTruthy()
+            expect(account.id).toBeTruthy()
+            expect(account.name).toBe(makeFakeAccountTest().name)
+            expect(account.email).toBe(makeFakeAccountTest().email)
+            expect(account.password).toBe(makeFakeAccountTest().password)
+        })
     })
-    it('Should return an account on loadByEmail success', async () => {
-        const sut = makeSut()
-        await accountCollection.insertOne(makeFakeAccountTest())
-        const account = await sut.loadByEmail(makeFakeAccountTest().email)
-        expect(account).toBeTruthy()
-        expect(account.id).toBeTruthy()
-        expect(account.name).toBe(makeFakeAccountTest().name)
-        expect(account.email).toBe(makeFakeAccountTest().email)
-        expect(account.password).toBe(makeFakeAccountTest().password)
+    describe('loadByEmail()', () => {
+        it('Should return an account on loadByEmail success', async () => {
+            const sut = makeSut()
+            await accountCollection.insertOne(makeFakeAccountTest())
+            const account = await sut.loadByEmail(makeFakeAccountTest().email)
+            expect(account).toBeTruthy()
+            expect(account.id).toBeTruthy()
+            expect(account.name).toBe(makeFakeAccountTest().name)
+            expect(account.email).toBe(makeFakeAccountTest().email)
+            expect(account.password).toBe(makeFakeAccountTest().password)
+        })
+        it('Should return null if loadByEmail fails', async () => {
+            const sut = makeSut()
+            const account = await sut.loadByEmail(makeFakeAccountTest().email)
+            expect(account).toBeFalsy()
+        })
     })
-    it('Should return null if loadByEmail fails', async () => {
-        const sut = makeSut()
-        const account = await sut.loadByEmail(makeFakeAccountTest().email)
-        expect(account).toBeFalsy()
-    })
-    it('Should update the account accessToken on updateAccessToken success', async () => {
-        const sut = makeSut()
-        const res = await accountCollection.insertOne(makeFakeAccountTest())
-        const fakeAccount = await accountCollection.findOne(res.insertedId)
-        expect(fakeAccount.accessToken).toBeFalsy()
-        // console.log(fakeAccount && MongoHelper.map(fakeAccount).id)
-        await sut.updateAccessToken(fakeAccount._id, 'any_token')
-        const account = await accountCollection.findOne({ _id: fakeAccount._id })
-        expect(account).toBeTruthy()
-        expect(account.accessToken).toBe('any_token')
+    describe('updateAccessToken()', () => {
+        it('Should update the account accessToken on updateAccessToken success', async () => {
+            const sut = makeSut()
+            const res = await accountCollection.insertOne(makeFakeAccountTest())
+            const fakeAccount = await accountCollection.findOne(res.insertedId)
+            expect(fakeAccount.accessToken).toBeFalsy()
+            // console.log(fakeAccount && MongoHelper.map(fakeAccount).id)
+            await sut.updateAccessToken(fakeAccount._id, 'any_token')
+            const account = await accountCollection.findOne({ _id: fakeAccount._id })
+            expect(account).toBeTruthy()
+            expect(account.accessToken).toBe('any_token')
+        })
     })
 })
