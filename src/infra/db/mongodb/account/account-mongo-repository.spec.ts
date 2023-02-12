@@ -70,15 +70,40 @@ describe('Account Mongo Repository', () => {
             expect(account.email).toBe(makeFakeAccountTest().email)
             expect(account.password).toBe(makeFakeAccountTest().password)
         })
-        it('Should return an account on loadByToken() with role on success', async () => {
+        it('Should return an account on loadByToken() with admin role on success', async () => {
             const sut = makeSut()
             await accountCollection.insertOne(Object
                 .assign({}, makeFakeAccountTest(), {
                     accessToken: 'any_token',
-                    role: 'any_role'
+                    role: 'admin'
                 })
             )
-            const account = await sut.loadByToken('any_token', 'any_role')
+            const account = await sut.loadByToken('any_token', 'admin')
+            expect(account).toBeTruthy()
+            expect(account.id).toBeTruthy()
+            expect(account.name).toBe(makeFakeAccountTest().name)
+            expect(account.email).toBe(makeFakeAccountTest().email)
+            expect(account.password).toBe(makeFakeAccountTest().password)
+        })
+        it('Should return null on loadByToken() with invalid role', async () => {
+            const sut = makeSut()
+            await accountCollection.insertOne(Object
+                .assign({}, makeFakeAccountTest(), {
+                    accessToken: 'any_token'
+                })
+            )
+            const account = await sut.loadByToken('any_token', 'admin')
+            expect(account).toBeFalsy()
+        })
+        it('Should return an account on loadByToken() if user is admin', async () => {
+            const sut = makeSut()
+            await accountCollection.insertOne(Object
+                .assign({}, makeFakeAccountTest(), {
+                    accessToken: 'any_token',
+                    role: 'admin'
+                })
+            )
+            const account = await sut.loadByToken('any_token')
             expect(account).toBeTruthy()
             expect(account.id).toBeTruthy()
             expect(account.name).toBe(makeFakeAccountTest().name)
