@@ -1,3 +1,5 @@
+[![Coverage Status](https://coveralls.io/repos/github/wando777/tddnodeapi/badge.svg?branch=main)](https://coveralls.io/github/wando777/tddnodeapi?branch=main)
+
 # tddnodeapi
 >
 > ## Built APIs
