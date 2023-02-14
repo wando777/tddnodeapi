@@ -32,7 +32,8 @@ describe('Survey Mongo Repository', () => {
         },
         {
             answer: 'any_answer 2'
-        }]
+        }],
+        date: new Date()
     })
 
     it('Should return true on add survey success', async () => {

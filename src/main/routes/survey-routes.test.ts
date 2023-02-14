@@ -34,7 +34,7 @@ describe('Survey Routes', () => {
         {
             answer: 'Answer 2'
         }]
-    })
+    } as any)
 
     describe('POST /survey', () => {
         it('Should return 403 on add survey without accessToken', async () => {
