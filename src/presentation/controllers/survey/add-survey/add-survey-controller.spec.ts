@@ -25,12 +25,12 @@ const makeValidation = (): Validation => {
 }
 
 const makeAddSurvey = (): AddSurvey => {
-   class AddSurveynStub implements AddSurvey {
+   class AddSurveyStub implements AddSurvey {
       async add(input: AddSurveyModel): Promise<void> {
          return await new Promise(resolve => resolve())
       }
    }
-   return new AddSurveynStub()
+   return new AddSurveyStub()
 }
 
 const makeSut = (): SutTypes => {
