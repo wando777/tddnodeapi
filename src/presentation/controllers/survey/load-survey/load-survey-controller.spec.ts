@@ -1,6 +1,7 @@
 import { LoadSurvey, SurveyModel } from './load-survey-controller-protocols';
 import { LoadSurveyController } from './load-survey-controller'
 import MockDate from 'mockdate'
+import { ok } from '../../../helpers/http/http-helper';
 
 const makeFakeSurveys = (): SurveyModel[] => [{
    id: 'any_id',
@@ -66,9 +67,9 @@ describe('LoadSurvey Controller', () => {
    //    const httpresponse = await sut.handle(makeFakeRequest())
    //    expect(httpresponse).toEqual(serverError(new Error()))
    // })
-   // it('Should return 204 on success', async () => {
-   //    const { sut } = makeSut()
-   //    const httpresponse = await sut.handle(makeFakeRequest())
-   //    expect(httpresponse).toEqual(created())
-   // })
+   it('Should return 200 on LoadSurvey success', async () => {
+      const { sut } = makeSut()
+      const httpresponse = await sut.handle({})
+      expect(httpresponse).toEqual(ok(makeFakeSurveys()))
+   })
 })
