@@ -51,16 +51,16 @@ describe('DbAddSurvey Usecase', () => {
   })
   it('Should return a list of Surveys on success', async () => {
     const { sut } = makeSut()
-    const promise = await sut.load()
-    expect(promise).toEqual(makeFakeSurveys())
+    const surveyResponse = await sut.load()
+    expect(surveyResponse).toEqual(makeFakeSurveys())
   })
-  // it('Should throw an error if AddSurveyRepository throws', async () => {
-  //   const { sut, addSurveyRepositoryStub } = makeSut();
-  //   jest.spyOn(addSurveyRepositoryStub, 'add').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
-  //   // jest.spyOn(addSurveyRepositoryStub, 'add').mockImplementationOnce(async () => {
-  //   //     throw new Error()
-  //   // })
-  //   const accountPromise = sut.add(makeFakeSurvey())
-  //   await expect(accountPromise).rejects.toThrow()
-  // })
+  it('Should throw an error if AddSurveyRepository throws', async () => {
+    const { sut, loadSurveyRepositoryStub } = makeSut();
+    jest.spyOn(loadSurveyRepositoryStub, 'loadAll').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
+    // jest.spyOn(addSurveyRepositoryStub, 'add').mockImplementationOnce(async () => {
+    //     throw new Error()
+    // })
+    const promise = sut.load()
+    await expect(promise).rejects.toThrow()
+  })
 })
