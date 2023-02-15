@@ -49,18 +49,6 @@ describe('LoadSurvey Controller', () => {
       await sut.handle({})
       expect(loadSpy).toHaveBeenCalled()
    })
-   // it('Should return 400 validation fails', async () => {
-   //    const { sut, validationStub } = makeSut()
-   //    jest.spyOn(validationStub, 'validate').mockReturnValueOnce(new Error())
-   //    const httpresponse = await sut.handle(makeFakeRequest())
-   //    expect(httpresponse).toEqual(badRequest(new Error()))
-   // })
-   // it('Should call AddSurvey use case with correct values', async () => {
-   //    const { sut, addSurveyStub } = makeSut()
-   //    const addSpy = jest.spyOn(addSurveyStub, 'add')
-   //    await sut.handle(makeFakeRequest())
-   //    expect(addSpy).toHaveBeenCalledWith(makeFakeRequest().body)
-   // })
    it('Should throw server error if AddSurvey throws', async () => {
       const { sut, loadSurveyStub } = makeSut()
       jest.spyOn(loadSurveyStub, 'load').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
