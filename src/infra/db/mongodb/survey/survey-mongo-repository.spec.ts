@@ -46,7 +46,7 @@ describe('Survey Mongo Repository', () => {
     })
 
     describe('loadAll()', () => {
-        it('Should return all surveys on  success', async () => {
+        it('Should return all surveys on success', async () => {
             const sut = makeSut()
             await surveyCollection.insertOne(makeFakeSurveyTest())
             const surveys = await sut.loadAll()
@@ -54,6 +54,12 @@ describe('Survey Mongo Repository', () => {
             expect(surveys).toBeTruthy()
             expect(surveys.length).toBe(1)
             expect(surveys[0].question).toBe(makeFakeSurveyTest().question)
+        })
+        it('Should return an empty list when empty', async () => {
+            const sut = makeSut()
+            const surveys = await sut.loadAll()
+            expect(surveys).toBeTruthy()
+            expect(surveys.length).toBe(0)
         })
     })
 })
