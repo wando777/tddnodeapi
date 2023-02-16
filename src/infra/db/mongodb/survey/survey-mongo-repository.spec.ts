@@ -36,10 +36,24 @@ describe('Survey Mongo Repository', () => {
         date: new Date()
     })
 
-    it('Should return true on add survey success', async () => {
-        const sut = makeSut()
-        await sut.add(makeFakeSurveyTest())
-        const survey = await surveyCollection.findOne({ question: makeFakeSurveyTest().question })
-        expect(survey).toBeTruthy()
+    describe('add()', () => {
+        it('Should return true on add survey success', async () => {
+            const sut = makeSut()
+            await sut.add(makeFakeSurveyTest())
+            const survey = await surveyCollection.findOne({ question: makeFakeSurveyTest().question })
+            expect(survey).toBeTruthy()
+        })
+    })
+
+    describe('loadAll()', () => {
+        it('Should return all surveys on  success', async () => {
+            const sut = makeSut()
+            await surveyCollection.insertOne(makeFakeSurveyTest())
+            const surveys = await sut.loadAll()
+            // const survey = await surveyCollection.findOne({ question: makeFakeSurveyTest().question })
+            expect(surveys).toBeTruthy()
+            expect(surveys.length).toBe(1)
+            expect(surveys[0].question).toBe(makeFakeSurveyTest().question)
+        })
     })
 })
