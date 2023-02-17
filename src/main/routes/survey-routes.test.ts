@@ -78,28 +78,47 @@ describe('Survey Routes', () => {
                 .get('/api/survey')
                 .expect(403)
         })
-        // it('Should return 204 on add survey with valid accessToken', async () => {
-        //     const res = await accountCollection.insertOne({
-        //         name: 'Wandao',
-        //         email: 'wando123@gmai.com',
-        //         password: '777',
-        //         role: 'admin'
-        //     })
-        //     const id = res.insertedId
-        //     const accessToken = sign({ id }, env.jwtSecret)
-        //     await accountCollection.updateOne({
-        //         _id: id
-        //     }, {
-        //         $set: {
-        //             accessToken
-        //         }
-        //     })
-        //     await request(app)
-        //         .post('/api/survey')
-        //         .set('x-access-token', accessToken)
-        //         .send(makeFakeSurvey())
-        //         .expect(204)
-        // })
+        it('Should return 204 on load survey with valid accessToken but there is no survey', async () => {
+            const res = await accountCollection.insertOne({
+                name: 'Wandao',
+                email: 'wando123@gmai.com',
+                password: '777'
+            })
+            const id = res.insertedId
+            const accessToken = sign({ id }, env.jwtSecret)
+            await accountCollection.updateOne({
+                _id: id
+            }, {
+                $set: {
+                    accessToken
+                }
+            })
+            await request(app)
+                .get('/api/survey')
+                .set('x-access-token', accessToken)
+                .expect(204)
+        })
+        it('Should return 200 on load survey with valid accessToken', async () => {
+            const res = await accountCollection.insertOne({
+                name: 'Wandao',
+                email: 'wando123@gmai.com',
+                password: '777'
+            })
+            const id = res.insertedId
+            const accessToken = sign({ id }, env.jwtSecret)
+            await accountCollection.updateOne({
+                _id: id
+            }, {
+                $set: {
+                    accessToken
+                }
+            })
+            await surveyCollection.insertOne(makeFakeSurvey())
+            await request(app)
+                .get('/api/survey')
+                .set('x-access-token', accessToken)
+                .expect(200)
+        })
         // it('Should return 403 on add survey with an invalid accessToken', async () => {
         //     await request(app)
         //         .post('/api/survey')
