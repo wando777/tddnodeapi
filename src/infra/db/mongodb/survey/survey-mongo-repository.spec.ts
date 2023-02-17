@@ -6,6 +6,10 @@ import { AddSurveyModel } from '../../../../data/usecases/add-survey/db-add-surv
 
 let surveyCollection: Collection
 
+const makeSut = (): SurveyMongoRepository => {
+    return new SurveyMongoRepository();
+}
+
 describe('Survey Mongo Repository', () => {
     beforeAll(async () => {
         await MongoHelper.connect(env.mongoUrl)
@@ -19,10 +23,6 @@ describe('Survey Mongo Repository', () => {
         surveyCollection = await MongoHelper.getCollection('surveys')
         await surveyCollection.deleteMany({})
     })
-
-    const makeSut = (): SurveyMongoRepository => {
-        return new SurveyMongoRepository();
-    }
 
     const makeFakeSurveyTest = (): AddSurveyModel => ({
         question: 'any_question',
