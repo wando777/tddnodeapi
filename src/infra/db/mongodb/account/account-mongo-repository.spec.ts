@@ -1,8 +1,8 @@
 import { AccountMongoRepository } from './account-mongo-repository'
+import env from '@/main/config/env'
+import { AddAccountModel } from '@/domain/usecases/add-account'
 import { MongoHelper } from '../helpers/mongo-helper'
 import { Collection } from 'mongodb'
-import env from '../../../../main/config/env'
-import { AddAccountModel } from '../../../../domain/usecases/add-account'
 
 let accountCollection: Collection
 

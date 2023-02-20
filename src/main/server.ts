@@ -1,4 +1,5 @@
-import { MongoHelper } from '../infra/db/mongodb/helpers/mongo-helper'
+import 'module-alias/register'
+import { MongoHelper } from '@/infra/db/mongodb/helpers/mongo-helper'
 import app from './config/app'
 import env from './config/env'
 

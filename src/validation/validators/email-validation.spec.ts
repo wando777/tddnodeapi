@@ -1,7 +1,7 @@
-import { InvalidParamError } from '../../presentation/errors'
-import { HttpRequest, SutTypesEmailValidation } from '../../presentation/protocols'
-import { EmailValidator } from '../protocols/email-validator'
 import { EmailValidation } from './email-validation'
+import { EmailValidator } from '../protocols/email-validator'
+import { InvalidParamError } from '@/presentation/errors'
+import { SutTypesEmailValidation, HttpRequest } from '@/presentation/protocols'
 
 const makeEmailValidator = (): EmailValidator => {
     // this is a mock response for testing valid parameters
