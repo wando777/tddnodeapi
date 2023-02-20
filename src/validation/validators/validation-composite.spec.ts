@@ -1,6 +1,6 @@
-import { MissingParamError } from '../../presentation/errors'
-import { SutTypesValidation } from '../../presentation/protocols/sut-types'
-import { Validation } from '../../presentation/protocols'
+import { MissingParamError } from '@/presentation/errors'
+import { SutTypesValidation } from '@/presentation/protocols/sut-types'
+import { Validation } from '@/presentation/protocols'
 import { ValidationComposite } from './validation-composite'
 
 const makeValidation = (): Validation => {

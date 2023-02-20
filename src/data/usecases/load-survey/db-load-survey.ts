@@ -1,4 +1,4 @@
-import { SurveyModel } from '../../../domain/models/survey'
+import { SurveyModel } from '@/domain/models/survey'
 import { LoadSurvey, LoadSurveyRepository } from './db-load-survey-protocols'
 
 export class DbLoadSurvey implements LoadSurvey {

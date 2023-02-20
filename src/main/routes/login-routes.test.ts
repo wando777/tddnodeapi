@@ -1,11 +1,11 @@
-import { hash } from 'bcrypt';
-import { Collection } from 'mongodb';
-import request from 'supertest'
-import { AddAccountModel } from '../../domain/usecases/add-account';
-import { SignUpAccountModel } from '../../domain/usecases/signup-account';
-import { MongoHelper } from '../../infra/db/mongodb/helpers/mongo-helper';
 import app from '../config/app'
 import env from '../config/env';
+import { AddAccountModel } from '@/domain/usecases/add-account';
+import { SignUpAccountModel } from '@/domain/usecases/signup-account';
+import { MongoHelper } from '@/infra/db/mongodb/helpers/mongo-helper';
+import { Collection } from 'mongodb';
+import { hash } from 'bcrypt';
+import request from 'supertest'
 
 let accountCollection: Collection
 

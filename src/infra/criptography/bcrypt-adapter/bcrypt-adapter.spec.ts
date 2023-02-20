@@ -1,5 +1,5 @@
-import bcrypt from 'bcrypt'
 import { BcryptAdapter } from './bcrypt-adapter'
+import bcrypt from 'bcrypt'
 
 const hashMocked = 'hashMocked'
 const salt = 12

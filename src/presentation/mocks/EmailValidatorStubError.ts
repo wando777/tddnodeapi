@@ -1,4 +1,4 @@
-import { EmailValidator } from '../../validation/protocols/email-validator'
+import { EmailValidator } from '@/validation/protocols/email-validator';
 
 export class EmailValidatorStubError implements EmailValidator {
     isValid(email: string): boolean {
