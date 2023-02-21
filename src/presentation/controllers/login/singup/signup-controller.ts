@@ -1,5 +1,5 @@
 import { ParamInUseError } from '@/presentation/errors'
-import { badRequest, ok, serverError } from '@/presentation/helpers/http/http-helper'
+import { badRequest, forbidden, ok, serverError } from '@/presentation/helpers/http/http-helper'
 import { Controller, HttpResponse, HttpRequest, AddAccount, Validation, Authentication } from './signup-controller-protocols'
 
 export class SignUpController implements Controller {
@@ -23,7 +23,7 @@ export class SignUpController implements Controller {
                 password
             })
             if (!accountCreated) {
-                return serverError(new ParamInUseError('email'))
+                return forbidden(new ParamInUseError('email'))
             }
             const accessToken = await this.authentication.auth({ email, password })
             return ok({ accessToken })
