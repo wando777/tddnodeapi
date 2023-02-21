@@ -1,6 +1,6 @@
 {
   "name": "clean-node-api",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "description": "NodeJs Rest API using TDD, CLean Architecture and TS",
   "main": "index.js",
   "scripts": {
