@@ -22,7 +22,7 @@ const makeLoadSurvey = (): LoadSurvey => {
    return new LoadSurveyStub()
 }
 
-export interface SutTypes {
+export type SutTypes = {
    sut: LoadSurveyController
    loadSurveyStub: LoadSurvey
 }

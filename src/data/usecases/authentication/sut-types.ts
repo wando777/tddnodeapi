@@ -4,7 +4,7 @@ import { LoadAccountByEmailRepository } from '../../protocols/db/account/load-ac
 import { UpdateAccessTokenRepository } from '../../protocols/db/account/update-access-token-repository';
 import { DbAuthentication } from './db-authentication';
 
-export interface SutTypesDbAuthentication{
+export type SutTypesDbAuthentication = {
     sut: DbAuthentication
     loadAccountByEmailRepositoryStub: LoadAccountByEmailRepository
     hashComparerStub: HashComparer

@@ -6,25 +6,25 @@ import { AddAccount } from '../controllers/login/singup/signup-controller-protoc
 import { EmailValidator } from '@/validation/protocols/email-validator'
 import { EmailValidation, ValidationComposite } from '@/validation/validators'
 
-export interface SutTypes {
+export type SutTypes = {
     sut: SignUpController
     addAccountStub: AddAccount
     validationStub: Validation
     authenticationStub: Authentication
 }
 
-export interface SutTypesLogin {
+export type SutTypesLogin = {
     sut: LoginController
     authenticationStub: Authentication
     validationStub: Validation
 }
 
-export interface SutTypesEmailValidation {
+export type SutTypesEmailValidation = {
     sut: EmailValidation
     emailValidatorStub: EmailValidator
 }
 
-export interface SutTypesValidation {
+export type SutTypesValidation = {
     sut: ValidationComposite
     validationStubs: Validation[]
 }

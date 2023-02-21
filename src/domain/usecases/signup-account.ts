@@ -1,4 +1,4 @@
-export interface SignUpAccountModel {
+export type SignUpAccountModel = {
     name: string
     email: string
     password: string
