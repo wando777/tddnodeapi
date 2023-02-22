@@ -87,5 +87,23 @@ describe('Survey Result Mongo Repository', () => {
             expect(surveyResult.id).toBeTruthy()
             expect(surveyResult.userId).toEqual(surveyResultData.userId)
         })
+        it('Should update survey on success', async () => {
+            const sut = makeSut()
+            const surveyResultData = await makeFakeSurveyResultData()
+            const res = await surveyResultsCollection.insertOne(surveyResultData) // Inserting a suvery result into the data base
+            const resultFind = await surveyResultsCollection.findOne(res.insertedId)
+            // const firstSurveyResultData = resultFind && MongoHelper.map(resultFind)
+            // const updated = Object.assign(surveyResultData, surveyResultData.answer, 'updated_answer') // Updating my survey data result with a new answer
+            // const surveyResult = await sut.saveResult(updated)
+            const surveyResult = await sut.saveResult({
+                surveyId: surveyResultData.surveyId,
+                userId: surveyResultData.userId,
+                answer: 'updated_answer',
+                date: new Date()
+            })
+            expect(surveyResult).toBeTruthy()
+            expect(surveyResult.id).toEqual(resultFind._id)
+            expect(surveyResult.answer).toEqual('updated_answer')
+        })
     })
 })
