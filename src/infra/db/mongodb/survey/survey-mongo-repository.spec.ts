@@ -1,8 +1,9 @@
-import { SurveyMongoRepository } from './survey-mongo-repository'
-import { MongoHelper } from '../helpers/mongo-helper'
-import { Collection } from 'mongodb'
-import env from '../../../../main/config/env'
-import { AddSurveyModel } from '../../../../data/usecases/add-survey/db-add-survey-protocols'
+import { AddSurveyModel } from '@/domain/usecases/add-survey';
+import { SaveSurveyResultModel } from '@/domain/usecases/save-survey-result';
+import env from '@/main/config/env';
+import { Collection } from 'mongodb';
+import { MongoHelper } from '../helpers/mongo-helper';
+import { SurveyMongoRepository } from './survey-mongo-repository';
 
 let surveyCollection: Collection
 
@@ -36,6 +37,15 @@ describe('Survey Mongo Repository', () => {
         date: new Date()
     })
 
+    const makeFakeSurveyResultData = (): SaveSurveyResultModel => ({
+        surveyId: 'any_surveyId',
+        userId: 'any_userId',
+        answer: 'any_answer',
+        date: new Date()
+    })
+
+    const makeFakeSurveyResult = Object.assign({}, makeFakeSurveyResultData(), { id: 'any_id' })
+
     describe('add()', () => {
         it('Should return true on add survey success', async () => {
             const sut = makeSut()
@@ -60,6 +70,28 @@ describe('Survey Mongo Repository', () => {
             const surveys = await sut.loadAll()
             expect(surveys).toBeTruthy()
             expect(surveys.length).toBe(0)
+        })
+    })
+
+    describe('save()', () => {
+        it('Should return true on save survey success', async () => {
+            const sut = makeSut()
+            await sut.saveResult(makeFakeSurveyResultData())
+            const survey = await surveyCollection.findOne({ surveyId: makeFakeSurveyResultData().surveyId })
+            expect(survey).toBeTruthy()
+        })
+    })
+
+    describe('loadOneById()', () => {
+        it('Should return a survey result by Id on success', async () => {
+            const sut = makeSut()
+            const res = await surveyCollection.insertOne(makeFakeSurveyTest())
+            const surveyResult = surveyCollection.findOne(res.insertedId)
+            console.log(makeFakeSurveyResult.id)
+            const survey = await sut.loadOneById(
+                (surveyResult && MongoHelper.map(surveyResult)).id
+            )
+            expect(survey).toBeTruthy()
         })
     })
 })
