@@ -73,15 +73,6 @@ describe('Survey Mongo Repository', () => {
         })
     })
 
-    describe('save()', () => {
-        it('Should return true on save survey success', async () => {
-            const sut = makeSut()
-            await sut.saveResult(makeFakeSurveyResultData())
-            const survey = await surveyCollection.findOne({ surveyId: makeFakeSurveyResultData().surveyId })
-            expect(survey).toBeTruthy()
-        })
-    })
-
     describe('loadOneById()', () => {
         it('Should return a survey result by Id on success', async () => {
             const sut = makeSut()
