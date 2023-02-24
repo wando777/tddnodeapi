@@ -1,7 +1,7 @@
 import app from '../config/app'
 import env from '../config/env';
-import { AddAccountModel } from '@/domain/usecases/add-account';
-import { SignUpAccountModel } from '@/domain/usecases/signup-account';
+import { AddAccountModel } from '@/domain/usecases/account/add-account';
+import { SignUpAccountModel } from '@/domain/usecases/account/signup-account';
 import { MongoHelper } from '@/infra/db/mongodb/helpers/mongo-helper';
 import { Collection } from 'mongodb';
 import { hash } from 'bcrypt';

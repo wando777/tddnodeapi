@@ -1,4 +1,4 @@
-import { AddSurveyModel } from '@/domain/usecases/add-survey';
+import { AddSurveyModel } from '@/domain/usecases/survey/add-survey';
 import { MongoHelper } from '@/infra/db/mongodb/helpers/mongo-helper';
 import { sign } from 'jsonwebtoken';
 import { Collection } from 'mongodb';

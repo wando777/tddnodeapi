@@ -1,8 +1,8 @@
 import { AccountModel } from '@/domain/models/account';
 import { SurveyModel } from '@/domain/models/survey';
-import { AddAccountModel } from '@/domain/usecases/add-account';
-import { AddSurveyModel } from '@/domain/usecases/add-survey';
-import { SaveSurveyResultModel } from '@/domain/usecases/save-survey-result';
+import { AddAccountModel } from '@/domain/usecases/account/add-account';
+import { AddSurveyModel } from '@/domain/usecases/survey/add-survey';
+import { SaveSurveyResultModel } from '@/domain/usecases/survey-result/save-survey-result';
 import env from '@/main/config/env';
 import { Collection } from 'mongodb';
 import { MongoHelper } from '../helpers/mongo-helper';

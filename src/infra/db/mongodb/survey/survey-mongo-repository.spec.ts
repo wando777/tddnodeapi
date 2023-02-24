@@ -1,5 +1,5 @@
-import { AddSurveyModel } from '@/domain/usecases/add-survey';
-import { SaveSurveyResultModel } from '@/domain/usecases/save-survey-result';
+import { AddSurveyModel } from '@/domain/usecases/survey/add-survey';
+import { SaveSurveyResultModel } from '@/domain/usecases/survey-result/save-survey-result';
 import env from '@/main/config/env';
 import { Collection } from 'mongodb';
 import { MongoHelper } from '../helpers/mongo-helper';

@@ -1,11 +1,11 @@
 import { MongoHelper } from '../helpers/mongo-helper'
-import { AddSurveyRepository } from '@/data/usecases/add-survey/db-add-survey-protocols'
-import { LoadSurveyRepository } from '@/data/usecases/load-survey/db-load-survey-protocols'
+import { AddSurveyRepository } from '@/data/usecases/survey/add-survey/db-add-survey-protocols'
+import { LoadSurveyRepository } from '@/data/usecases/survey/load-survey/db-load-survey-protocols'
 import { SaveSurveyResultModel, SaveSurveyResultRepository } from '@/data/usecases/save-survey-result/db-save-survey-result-protocols'
 import { SurveyModel } from '@/domain/models/survey'
-import { AddSurveyModel } from '@/domain/usecases/add-survey'
+import { AddSurveyModel } from '@/domain/usecases/survey/add-survey'
 import { SurveyResultModel } from '@/domain/models/survey-result'
-import { LoadSurveyByIdRepository } from '@/data/usecases/load-survey-by-id/db-load-survey-by-id-protocols'
+import { LoadSurveyByIdRepository } from '@/data/usecases/survey/load-survey-by-id/db-load-survey-by-id-protocols'
 
 export class SurveyMongoRepository implements AddSurveyRepository, LoadSurveyRepository, LoadSurveyByIdRepository {
     async loadAll(): Promise<SurveyModel[]> {
