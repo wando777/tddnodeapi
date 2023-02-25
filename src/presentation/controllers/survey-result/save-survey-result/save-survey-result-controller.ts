@@ -1,5 +1,5 @@
 import { InvalidParamError } from '@/presentation/errors';
-import { notFound, ok } from '@/presentation/helpers/http/http-helper';
+import { notFound, ok, serverError } from '@/presentation/helpers/http/http-helper';
 import { Controller, HttpRequest, HttpResponse, LoadSurveyById } from './save-survey-result-controller-protocols';
 
 export class SaveSurveyResultController implements Controller {
@@ -9,9 +9,14 @@ export class SaveSurveyResultController implements Controller {
 	) { }
 
 	async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
-		const survey = await this.loadSurveyById.loadById(httpRequest.params.surveyId)
-		if (!survey) {
-			return notFound(new InvalidParamError('Survey not found'))
+		try {
+			const survey = await this.loadSurveyById.loadById(httpRequest.params.surveyId)
+			if (!survey) {
+				return notFound(new InvalidParamError('Survey not found'))
+			}
+			return ok(survey)
+		} catch (err: any) {
+			return serverError(err)
 		}
 		// const error = this.validation.validate(httpRequest.body)
 		// if (error) {
@@ -24,6 +29,5 @@ export class SaveSurveyResultController implements Controller {
 		// 	answer,
 		// 	date: new Date()
 		// })
-		return ok(survey)
 	}
 }
