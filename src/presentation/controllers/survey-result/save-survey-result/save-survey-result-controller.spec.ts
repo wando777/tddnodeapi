@@ -1,6 +1,6 @@
 import { SurveyResultModel } from '@/domain/models/survey-result'
 import { InvalidParamError } from '@/presentation/errors'
-import { notFound, serverError } from '@/presentation/helpers/http/http-helper'
+import { badRequest, notFound, serverError } from '@/presentation/helpers/http/http-helper'
 import { SaveSurveyResultController } from './save-survey-result-controller'
 import { HttpRequest, Validation, SaveSurveyResult, SaveSurveyResultModel, LoadSurveyById } from './save-survey-result-controller-protocols'
 import { SurveyModel } from '@/domain/models/survey'
@@ -27,9 +27,9 @@ const makeFakeSurvey = (): SurveyModel => ({
   date: new Date()
 })
 
-const makeFakeSurveyResult = (): any => {
-  return Object.assign({}, makeFakeSurveyResult(), { id: 'any_id' })
-}
+// const makeFakeSurveyResult = (): any => {
+//   return Object.assign({}, makeFakeSurveyResult(), { id: 'any_id' })
+// }
 
 // const makeValidation = (): Validation => {
 //   class ValidationStub implements Validation {
@@ -98,6 +98,14 @@ describe('SaveSurveyResult Controller', () => {
     jest.spyOn(loadSurveyByIdStub, 'loadById').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
     const httpresponse = await sut.handle(makeFakeRequest())
     expect(httpresponse).toEqual(serverError(new Error()))
+  })
+  it('Should returns 400 if an invalid answer is provided', async () => {
+    const { sut } = makeSut()
+    const makeFakeRequestWithInvalidAnswer = makeFakeRequest()
+    makeFakeRequestWithInvalidAnswer.body.answer = 'invalid_answer'
+    const httpresponse = await sut.handle(makeFakeRequestWithInvalidAnswer)
+    expect(httpresponse).toEqual(badRequest(new InvalidParamError('invalid answer')))
+    // expect(httpresponse).toEqual(makeFakeRequest())
   })
   // it('Should call Validation with correct values', async () => {
   //   const { sut, validationStub } = makeSut()
