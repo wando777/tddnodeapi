@@ -1,6 +1,6 @@
 import { SurveyResultModel } from '@/domain/models/survey-result'
 import { InvalidParamError } from '@/presentation/errors'
-import { notFound } from '@/presentation/helpers/http/http-helper'
+import { notFound, serverError } from '@/presentation/helpers/http/http-helper'
 import { SaveSurveyResultController } from './save-survey-result-controller'
 import { HttpRequest, Validation, SaveSurveyResult, SaveSurveyResultModel, LoadSurveyById } from './save-survey-result-controller-protocols'
 import { SurveyModel } from '@/domain/models/survey'
@@ -93,6 +93,12 @@ describe('SaveSurveyResult Controller', () => {
     const httpresponse = await sut.handle(makeFakeRequest())
     expect(httpresponse).toEqual(notFound(new InvalidParamError('Survey not found')))
   })
+  it('Should throws if LoadSurveyById throws', async () => {
+    const { sut, loadSurveyByIdStub } = makeSut()
+    jest.spyOn(loadSurveyByIdStub, 'loadById').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
+    const httpresponse = await sut.handle(makeFakeRequest())
+    expect(httpresponse).toEqual(serverError(new Error()))
+  })
   // it('Should call Validation with correct values', async () => {
   //   const { sut, validationStub } = makeSut()
   //   const validateSpy = jest.spyOn(validationStub, 'validate')
@@ -110,12 +116,6 @@ describe('SaveSurveyResult Controller', () => {
   //   const saveSurveySpy = jest.spyOn(saveSurveyResultStub, 'save')
   //   await sut.handle(makeFakeRequest())
   //   expect(saveSurveySpy).toHaveBeenCalledWith(makeFakeRequest().body)
-  // })
-  // it('Should throw server error if AddSurvey throws', async () => {
-  //   const { sut, saveSurveyResultStub } = makeSut()
-  //   jest.spyOn(saveSurveyResultStub, 'save').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
-  //   const httpresponse = await sut.handle(makeFakeRequest())
-  //   expect(httpresponse).toEqual(serverError(new Error()))
   // })
   // it('Should return 200 on success', async () => {
   //   const { sut } = makeSut()
