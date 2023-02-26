@@ -4,6 +4,9 @@
         "module": "commonjs",
         "target": "es2019",
         "esModuleInterop": true,
+        // Mapeia os arquivos que serão gerados no ./dist para os arquivos .ts dentro de src, facilitando assim o debug
+        // O sourceMap não funcionou, e causou bug na aplicação, então tive que usar o inlineSourcemap
+        "inlineSourceMap": true,
         // "allowJs": true,
         "strict": true,
         "strictNullChecks": false,
@@ -14,10 +17,6 @@
                 "*"
             ]
         }
-        // "sourceMap": true
-        // "types": [
-        //     "node"
-        // ]
     },
     "include": [
         "src"

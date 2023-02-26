@@ -77,11 +77,9 @@ describe('Survey Mongo Repository', () => {
         it('Should return a survey result by Id on success', async () => {
             const sut = makeSut()
             const res = await surveyCollection.insertOne(makeFakeSurveyTest())
-            const surveyResult = surveyCollection.findOne(res.insertedId)
-            console.log(makeFakeSurveyResult.id)
-            const survey = await sut.loadOneById(
-                (surveyResult && MongoHelper.map(surveyResult)).id
-            )
+            const surveyResult = await surveyCollection.findOne(res.insertedId)
+            // console.log(surveyResult && MongoHelper.map(surveyResult))
+            const survey = await sut.loadOneById((surveyResult && MongoHelper.map(surveyResult).id))
             expect(survey).toBeTruthy()
         })
     })

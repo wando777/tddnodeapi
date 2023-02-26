@@ -28,6 +28,14 @@ const makeAccessToken = async (): Promise<string> => {
 }
 
 describe('Survey Result Routes', () => {
+    const makeFakeSurvey = (): AddSurveyModel => ({
+        question: 'Question 1',
+        answers: [{
+            answer: 'any_answer',
+            image: 'http://image-name.com'
+        }],
+        date: new Date()
+    })
     beforeAll(async () => {
         await MongoHelper.connect(env.mongoUrl)
     });
@@ -43,46 +51,23 @@ describe('Survey Result Routes', () => {
         await accountCollection.deleteMany({})
     })
 
-    const makeFakeSurvey = (): AddSurveyModel => ({
-        question: 'Question 1',
-        answers: [{
-            answer: 'Answer 1',
-            image: 'http://image-name.com'
-        },
-        {
-            answer: 'Answer 2'
-        }]
-    } as any)
-
     describe('PUT /survey/:surveyId/result', () => {
         it('Should return 403 on save survey result without accessToken', async () => {
             await request(app)
                 .put('/api/survey/any_surveyId/result') // it does not matter what surveyId I send cause it should always throw a 403 forbidden error
-                .send({ answer: 'any_answer' })
+                .send({ answer: makeFakeSurvey().answers[0].answer })
                 .expect(403)
         })
-        // it('Should return 204 on add survey with valid accessToken', async () => {
-        //     const res = await accountCollection.insertOne({
-        //         name: 'Wandao',
-        //         email: 'wando123@gmai.com',
-        //         password: '777',
-        //         role: 'admin'
-        //     })
-        //     const id = res.insertedId
-        //     const accessToken = sign({ id }, env.jwtSecret)
-        //     await accountCollection.updateOne({
-        //         _id: id
-        //     }, {
-        //         $set: {
-        //             accessToken
-        //         }
-        //     })
-        //     await request(app)
-        //         .post('/api/survey')
-        //         .set('x-access-token', accessToken)
-        //         .send(makeFakeSurvey())
-        //         .expect(204)
-        // })
+        it('Should return 200 on save survey with valid accessToken', async () => {
+            const accessToken = await makeAccessToken()
+            const surveyRes = await surveyCollection.insertOne(makeFakeSurvey())
+            const survey = await surveyCollection.findOne(surveyRes.insertedId)
+            await request(app)
+                .put(`/api/survey/${survey._id}/result`)
+                .set('x-access-token', accessToken)
+                .send({ answer: makeFakeSurvey().answers[0].answer })
+                .expect(200)
+        })
         // it('Should return 403 on add survey with an invalid accessToken', async () => {
         //     await request(app)
         //         .post('/api/survey')

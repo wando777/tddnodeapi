@@ -15,6 +15,7 @@
         "n/no-path-concat": "off",
         "@typescript-eslint/prefer-nullish-coalescing": "off",
         "no-tabs": "off",
-        "@typescript-eslint/consistent-type-definitions": "off"
+        "@typescript-eslint/consistent-type-definitions": "off",
+        "@typescript-eslint/restrict-template-expressions": "off"
     }
 }
