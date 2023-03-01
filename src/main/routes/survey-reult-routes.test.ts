@@ -1,4 +1,4 @@
-import { AddSurveyModel } from '@/domain/usecases/survey/add-survey';
+import { AddSurveyParams } from '@/domain/usecases/survey/add-survey';
 import { MongoHelper } from '@/infra/db/mongodb/helpers/mongo-helper';
 import { sign } from 'jsonwebtoken';
 import { Collection } from 'mongodb';
@@ -28,7 +28,7 @@ const makeAccessToken = async (): Promise<string> => {
 }
 
 describe('Survey Result Routes', () => {
-    const makeFakeSurvey = (): AddSurveyModel => ({
+    const makeFakeSurvey = (): AddSurveyParams => ({
         question: 'Question 1',
         answers: [{
             answer: 'any_answer',

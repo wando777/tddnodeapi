@@ -1,6 +1,6 @@
 import { InvalidParamError } from '@/presentation/errors';
 import { badRequest, notFound, ok, serverError } from '@/presentation/helpers/http/http-helper';
-import { Controller, HttpRequest, HttpResponse, LoadSurveyById, SaveSurveyResult, SaveSurveyResultModel } from './save-survey-result-controller-protocols';
+import { Controller, HttpRequest, HttpResponse, LoadSurveyById, SaveSurveyResult, SaveSurveyResultParams } from './save-survey-result-controller-protocols';
 
 export class SaveSurveyResultController implements Controller {
 	constructor(
@@ -22,7 +22,7 @@ export class SaveSurveyResultController implements Controller {
 			} else {
 				return notFound(new InvalidParamError('Survey not found'))
 			}
-			const saveSurveyModel: SaveSurveyResultModel = {
+			const saveSurveyModel: SaveSurveyResultParams = {
 				surveyId,
 				userId,
 				answer,

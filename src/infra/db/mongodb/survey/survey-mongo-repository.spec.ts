@@ -1,5 +1,5 @@
-import { AddSurveyModel } from '@/domain/usecases/survey/add-survey';
-import { SaveSurveyResultModel } from '@/domain/usecases/survey-result/save-survey-result';
+import { AddSurveyParams } from '@/domain/usecases/survey/add-survey';
+import { SaveSurveyResultParams } from '@/domain/usecases/survey-result/save-survey-result';
 import env from '@/main/config/env';
 import { Collection } from 'mongodb';
 import { MongoHelper } from '../helpers/mongo-helper';
@@ -25,7 +25,7 @@ describe('Survey Mongo Repository', () => {
         await surveyCollection.deleteMany({})
     })
 
-    const makeFakeSurveyTest = (): AddSurveyModel => ({
+    const makeFakeSurveyTest = (): AddSurveyParams => ({
         question: 'any_question',
         answers: [{
             answer: 'any_answer',
@@ -37,7 +37,7 @@ describe('Survey Mongo Repository', () => {
         date: new Date()
     })
 
-    const makeFakeSurveyResultData = (): SaveSurveyResultModel => ({
+    const makeFakeSurveyResultData = (): SaveSurveyResultParams => ({
         surveyId: 'any_surveyId',
         userId: 'any_userId',
         answer: 'any_answer',

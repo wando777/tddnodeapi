@@ -1,9 +1,9 @@
 import { MongoHelper } from '../helpers/mongo-helper'
-import { SaveSurveyResultModel, SaveSurveyResultRepository } from '@/data/usecases/save-survey-result/db-save-survey-result-protocols'
+import { SaveSurveyResultParams, SaveSurveyResultRepository } from '@/data/usecases/save-survey-result/db-save-survey-result-protocols'
 import { SurveyResultModel } from '@/domain/models/survey-result'
 
 export class SurveyResultMongoRepository implements SaveSurveyResultRepository {
-    async saveResult(surveyResultData: SaveSurveyResultModel): Promise<SurveyResultModel> {
+    async saveResult(surveyResultData: SaveSurveyResultParams): Promise<SurveyResultModel> {
         const surveyResultCollection = await MongoHelper.getCollection('surveyResults')
         const saveSurveyResult = await surveyResultCollection.findOneAndUpdate({
             surveyId: surveyResultData.surveyId,

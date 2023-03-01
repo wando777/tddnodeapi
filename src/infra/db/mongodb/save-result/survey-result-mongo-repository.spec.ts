@@ -1,8 +1,8 @@
 import { AccountModel } from '@/domain/models/account';
 import { SurveyModel } from '@/domain/models/survey';
-import { AddAccountModel } from '@/domain/usecases/account/add-account';
-import { AddSurveyModel } from '@/domain/usecases/survey/add-survey';
-import { SaveSurveyResultModel } from '@/domain/usecases/survey-result/save-survey-result';
+import { AddAccountParams } from '@/domain/usecases/account/add-account';
+import { AddSurveyParams } from '@/domain/usecases/survey/add-survey';
+import { SaveSurveyResultParams } from '@/domain/usecases/survey-result/save-survey-result';
 import env from '@/main/config/env';
 import { Collection } from 'mongodb';
 import { MongoHelper } from '../helpers/mongo-helper';
@@ -34,7 +34,7 @@ describe('Survey Result Mongo Repository', () => {
         await accountCollection.deleteMany({})
     })
 
-    const makeFakeSurveyData = (): AddSurveyModel => ({
+    const makeFakeSurveyData = (): AddSurveyParams => ({
         question: 'any_question',
         answers: [{
             answer: 'any_answer',
@@ -46,7 +46,7 @@ describe('Survey Result Mongo Repository', () => {
         date: new Date()
     })
 
-    const makeFakeAccountData = (): AddAccountModel => ({
+    const makeFakeAccountData = (): AddAccountParams => ({
         name: 'any_name',
         email: 'any_email@mail.com',
         password: 'any_password'
@@ -64,7 +64,7 @@ describe('Survey Result Mongo Repository', () => {
         return resultFind && MongoHelper.map(resultFind)
     }
 
-    const makeFakeSurveyResultData = async (): Promise<SaveSurveyResultModel> => {
+    const makeFakeSurveyResultData = async (): Promise<SaveSurveyResultParams> => {
         const survey = await makeFakeSurvey()
         const account = await makeFakeAccount()
         const surveyResult = {
