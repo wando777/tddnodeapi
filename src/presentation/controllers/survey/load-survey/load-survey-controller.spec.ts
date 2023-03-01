@@ -2,6 +2,7 @@ import { LoadSurvey, SurveyModel } from './load-survey-controller-protocols';
 import { LoadSurveyController } from './load-survey-controller'
 import { serverError, created, ok } from '@/presentation/helpers/http/http-helper';
 import MockDate from 'mockdate'
+import { throwError } from '@/domain/test';
 
 const makeFakeSurveys = (): SurveyModel[] => [{
    id: 'any_id',
@@ -51,7 +52,7 @@ describe('LoadSurvey Controller', () => {
    })
    it('Should throw server error if AddSurvey throws', async () => {
       const { sut, loadSurveyStub } = makeSut()
-      jest.spyOn(loadSurveyStub, 'load').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
+      jest.spyOn(loadSurveyStub, 'load').mockImplementationOnce(throwError)
       const httpresponse = await sut.handle({})
       expect(httpresponse).toEqual(serverError(new Error()))
    })
@@ -68,6 +69,7 @@ describe('LoadSurvey Controller', () => {
       // >
       // loadSpy.mockReturnValueOnce(new Promise(_resolve => _resolve(null)))
       jest.spyOn(loadSurveyStub, 'load').mockReturnValueOnce(new Promise(resolve => resolve([])))
+      // jest.spyOn(loadSurveyStub, 'load').mockImplementationOnce(throwError)
       const httpresponse = await sut.handle({})
       expect(httpresponse).toEqual(created())
    })

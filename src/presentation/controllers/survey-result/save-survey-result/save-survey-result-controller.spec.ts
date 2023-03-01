@@ -5,6 +5,7 @@ import { SaveSurveyResultController } from './save-survey-result-controller'
 import { HttpRequest, SaveSurveyResult, SaveSurveyResultParams, LoadSurveyById } from './save-survey-result-controller-protocols'
 import { SurveyModel } from '@/domain/models/survey'
 import MockDate from 'mockdate'
+import { throwError } from '@/domain/test'
 
 const makeFakeRequest = (): HttpRequest => ({
   body: {
@@ -101,7 +102,7 @@ describe('SaveSurveyResult Controller', () => {
   })
   it('Should return 500 if LoadSurveyById throws', async () => {
     const { sut, loadSurveyByIdStub } = makeSut()
-    jest.spyOn(loadSurveyByIdStub, 'loadById').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
+    jest.spyOn(loadSurveyByIdStub, 'loadById').mockImplementationOnce(throwError)
     const httpresponse = await sut.handle(makeFakeRequest())
     expect(httpresponse).toEqual(serverError(new Error()))
   })
@@ -122,7 +123,7 @@ describe('SaveSurveyResult Controller', () => {
   })
   it('Should return 500 if SaveSurveyResult throws', async () => {
     const { sut, saveSurveyResultStub } = makeSut()
-    jest.spyOn(saveSurveyResultStub, 'save').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
+    jest.spyOn(saveSurveyResultStub, 'save').mockImplementationOnce(throwError)
     const httpresponse = await sut.handle(makeFakeRequest())
     expect(httpresponse).toEqual(serverError(new Error()))
   })

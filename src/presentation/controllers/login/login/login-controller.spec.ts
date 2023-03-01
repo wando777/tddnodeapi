@@ -2,6 +2,7 @@ import { badRequest, serverError, unauthorized, ok } from '@/presentation/helper
 import { Authentication, AuthenticationParams, HttpRequest, SutTypesLogin, Validation } from './login-controller-protocols'
 import { LoginController } from './login-controller'
 import { ServerError, MissingParamError } from '@/presentation/errors'
+import { throwError } from '@/domain/test'
 
 const makeAuthentication = (): Authentication => {
     class AuthenticationStub implements Authentication {
@@ -52,10 +53,7 @@ describe('Login Controller', () => {
     })
     it('Should return 500 if Authentication throws an exception', async () => {
         const { sut, authenticationStub } = makeSut()
-        // jest.spyOn(authenticationStub, 'auth').mockImplementationOnce(async () => {
-        //     throw new Error()
-        // })
-        jest.spyOn(authenticationStub, 'auth').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
+        jest.spyOn(authenticationStub, 'auth').mockImplementationOnce(throwError)
         const httpResponse = await sut.handle(makeFakeRequest())
         expect(httpResponse).toEqual(serverError(new ServerError('')))
     })

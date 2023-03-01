@@ -1,6 +1,7 @@
 import { Decrypter, LoadAccountByTokenRepository } from './db-load-account-by-token-protocols'
 import { DbLoadAccountByToken } from './db-load-account-by-token'
 import { AccountModel } from '@/domain/models/account'
+import { throwError } from '@/domain/test'
 
 const makeFakeAuthentication = (): any => ({
   token: 'any_token',
@@ -81,13 +82,13 @@ describe('DbLoadAccountByToken UseCase', () => {
   })
   test('Should throw if Decrypter throws', async () => {
     const { sut, decrypterStub } = makeSut()
-    jest.spyOn(decrypterStub, 'decrypt').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
+    jest.spyOn(decrypterStub, 'decrypt').mockImplementationOnce(throwError)
     const promise = sut.load(makeFakeAuthentication().token, makeFakeAuthentication().role)
     await expect(promise).rejects.toThrow()
   })
   test('Should throw if LoadAccountByTokenRepository throws', async () => {
     const { sut, loadAccountByTokenRepositoryStub } = makeSut()
-    jest.spyOn(loadAccountByTokenRepositoryStub, 'loadByToken').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
+    jest.spyOn(loadAccountByTokenRepositoryStub, 'loadByToken').mockImplementationOnce(throwError)
     const promise = sut.load(makeFakeAuthentication().token, makeFakeAuthentication().role)
     await expect(promise).rejects.toThrow()
   })
