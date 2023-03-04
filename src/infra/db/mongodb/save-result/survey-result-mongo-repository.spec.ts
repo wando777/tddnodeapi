@@ -1,12 +1,11 @@
 import { AccountModel } from '@/domain/models/account';
 import { SurveyModel } from '@/domain/models/survey';
-import { AddAccountParams } from '@/domain/usecases/account/add-account';
-import { AddSurveyParams } from '@/domain/usecases/survey/add-survey';
+import { mockAddAccountParams, mockSurveyAddParams } from '@/domain/test';
 import { SaveSurveyResultParams } from '@/domain/usecases/survey-result/save-survey-result';
-import env from '@/main/config/env';
-import { Collection } from 'mongodb';
-import { MongoHelper } from '../helpers/mongo-helper';
 import { SurveyResultMongoRepository } from './survey-result-mongo-repository';
+import { MongoHelper } from '../helpers/mongo-helper';
+import { Collection } from 'mongodb';
+import env from '@/main/config/env';
 
 let surveyCollection: Collection
 let surveyResultsCollection: Collection
@@ -34,32 +33,14 @@ describe('Survey Result Mongo Repository', () => {
         await accountCollection.deleteMany({})
     })
 
-    const makeFakeSurveyData = (): AddSurveyParams => ({
-        question: 'any_question',
-        answers: [{
-            answer: 'any_answer',
-            image: 'any_image'
-        },
-        {
-            answer: 'any_answer 2'
-        }],
-        date: new Date()
-    })
-
-    const makeFakeAccountData = (): AddAccountParams => ({
-        name: 'any_name',
-        email: 'any_email@mail.com',
-        password: 'any_password'
-    })
-
     const makeFakeSurvey = async (): Promise<SurveyModel> => {
-        const res = await surveyCollection.insertOne(makeFakeSurveyData())
+        const res = await surveyCollection.insertOne(mockSurveyAddParams())
         const resultFind = await surveyCollection.findOne(res.insertedId)
         return resultFind && MongoHelper.map(resultFind)
     }
 
     const makeFakeAccount = async (): Promise<AccountModel> => {
-        const res = await accountCollection.insertOne(makeFakeAccountData())
+        const res = await accountCollection.insertOne(mockAddAccountParams())
         const resultFind = await accountCollection.findOne(res.insertedId)
         return resultFind && MongoHelper.map(resultFind)
     }
