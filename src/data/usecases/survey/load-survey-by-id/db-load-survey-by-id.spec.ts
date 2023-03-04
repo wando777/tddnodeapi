@@ -2,22 +2,12 @@ import { DbLoadSurveyById } from './db-load-survey-by-id'
 import { LoadSurveyByIdRepository } from './db-load-survey-by-id-protocols'
 import MockDate from 'mockdate'
 import { SurveyModel } from '@/domain/models/survey'
-import { throwError } from '@/domain/test'
-
-const makeFakeSurvey = (): SurveyModel => ({
-  id: 'any_id',
-  question: 'any_question',
-  answers: [{
-    image: 'any_image',
-    answer: 'any_answer'
-  }],
-  date: new Date()
-})
+import { mockSurveyModel, throwError } from '@/domain/test'
 
 const makeLoadSurveyByRepository = (): LoadSurveyByIdRepository => {
   class LoadSurveyByIdRepositoryStub implements LoadSurveyByIdRepository {
     async loadOneById(id: string): Promise<SurveyModel> {
-      return await new Promise(resolve => resolve(makeFakeSurvey()))
+      return await new Promise(resolve => resolve(mockSurveyModel()))
     }
   }
   return new LoadSurveyByIdRepositoryStub()
@@ -47,18 +37,18 @@ describe('DbLoadSurveyById Usecase', () => {
   it('Should call LoadSurveyByIdRepository with correct values', async () => {
     const { sut, loadSurveyByIdRepositoryStub } = makeSut()
     const loadByIdSpy = jest.spyOn(loadSurveyByIdRepositoryStub, 'loadOneById')
-    await sut.loadById(makeFakeSurvey().id)
-    expect(loadByIdSpy).toHaveBeenCalledWith(makeFakeSurvey().id)
+    await sut.loadById(mockSurveyModel().id)
+    expect(loadByIdSpy).toHaveBeenCalledWith(mockSurveyModel().id)
   })
   it('Should return a Survey on success', async () => {
     const { sut } = makeSut()
-    const surveyResponse = await sut.loadById(makeFakeSurvey().id)
-    expect(surveyResponse).toEqual(makeFakeSurvey())
+    const surveyResponse = await sut.loadById(mockSurveyModel().id)
+    expect(surveyResponse).toEqual(mockSurveyModel())
   })
   it('Should throw an error if LoadSurveyByIdRepository throws', async () => {
     const { sut, loadSurveyByIdRepositoryStub } = makeSut();
     jest.spyOn(loadSurveyByIdRepositoryStub, 'loadOneById').mockImplementationOnce(throwError)
-    const promise = sut.loadById(makeFakeSurvey().id)
+    const promise = sut.loadById(mockSurveyModel().id)
     await expect(promise).rejects.toThrow()
   })
 })
