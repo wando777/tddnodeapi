@@ -1,20 +1,10 @@
 import { EmailValidation } from './email-validation'
-import { EmailValidator } from '../protocols/email-validator'
 import { InvalidParamError } from '@/presentation/errors'
 import { SutTypesEmailValidation, HttpRequest } from '@/presentation/protocols'
-
-const makeEmailValidator = (): EmailValidator => {
-    // this is a mock response for testing valid parameters
-    class EmailValidatorStub implements EmailValidator {
-        isValid(email: string): boolean {
-            return true
-        }
-    }
-    return new EmailValidatorStub()
-}
+import { mockEmailValidator } from '../test'
 
 const makeSut = (): SutTypesEmailValidation => {
-    const emailValidatorStub = makeEmailValidator()
+    const emailValidatorStub = mockEmailValidator()
     const sut = new EmailValidation('email', emailValidatorStub) // injecting a dependecy to our implementation where it should return whats has been mocked.
     return {
         sut,
