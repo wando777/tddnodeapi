@@ -5,7 +5,7 @@ import { LoadSurvey, SurveyModel } from '../controllers/survey/load-survey/load-
 export const mockLoadSurvey = (): LoadSurvey => {
   class LoadSurveyStub implements LoadSurvey {
      async load(): Promise<SurveyModel[]> {
-        return await new Promise(resolve => resolve(mockListSurveyModel()))
+        return await Promise.resolve(mockListSurveyModel())
      }
   }
   return new LoadSurveyStub()
@@ -14,7 +14,7 @@ export const mockLoadSurvey = (): LoadSurvey => {
 export const mockLoadSurveyById = (): LoadSurveyById => {
    class LoadSurveyByIdStub implements LoadSurveyById {
      async loadById(id: string): Promise<SurveyModel> {
-       return await new Promise(resolve => resolve(mockSurveyModel()))
+       return await Promise.resolve(mockSurveyModel())
      }
    }
    return new LoadSurveyByIdStub()

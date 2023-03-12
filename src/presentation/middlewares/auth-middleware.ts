@@ -17,7 +17,7 @@ export class AuthMiddleware implements Middleware {
           return ok({ userId: account.id })
         }
       }
-      return await new Promise(resolve => resolve(forbidden(new AccessDeniedError())))
+      return await Promise.resolve(forbidden(new AccessDeniedError()))
     } catch (error: any) {
       return serverError(error)
     }

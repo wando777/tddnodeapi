@@ -7,10 +7,10 @@ const salt = 12
 
 jest.mock('bcrypt', () => ({
     async hash(): Promise<string> {
-        return await new Promise(resolve => resolve(hashMocked))
+        return await Promise.resolve(hashMocked)
     },
     async compare(): Promise<boolean> {
-        return await new Promise(resolve => resolve(true))
+        return await Promise.resolve(true)
     }
 }))
 
@@ -66,7 +66,7 @@ describe('Bcrypt Adapter', () => {
                 ReturnType<(key: boolean) => Promise<boolean>>,
                 Parameters<(key: boolean) => Promise<boolean>>
             >
-            hashSpy.mockReturnValueOnce(new Promise(_resolve => _resolve(false)))
+            hashSpy.mockReturnValueOnce(Promise.resolve(false))
             const anyValue = 'any_value'
             const compare = await sut.compare(anyValue, 'any_hash')
             expect(compare).toBe(false)

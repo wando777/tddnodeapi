@@ -49,7 +49,7 @@ describe('SaveSurveyResult Controller', () => {
   })
   it('Should returns 404 if LoadSurveyById returns null', async () => {
     const { sut, loadSurveyByIdStub } = makeSut()
-    jest.spyOn(loadSurveyByIdStub, 'loadById').mockReturnValueOnce(new Promise(resolve => resolve(null)))
+    jest.spyOn(loadSurveyByIdStub, 'loadById').mockReturnValueOnce(Promise.resolve(null))
     const httpresponse = await sut.handle(mockRequest())
     expect(httpresponse).toEqual(notFound(new InvalidParamError('Survey not found')))
   })

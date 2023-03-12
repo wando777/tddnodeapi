@@ -50,7 +50,7 @@ describe('LoadSurvey Controller', () => {
       //    Parameters<(key: null) => Promise<null>>
       // >
       // loadSpy.mockReturnValueOnce(new Promise(_resolve => _resolve(null)))
-      jest.spyOn(loadSurveyStub, 'load').mockReturnValueOnce(new Promise(resolve => resolve([])))
+      jest.spyOn(loadSurveyStub, 'load').mockReturnValueOnce(Promise.resolve([]))
       // jest.spyOn(loadSurveyStub, 'load').mockImplementationOnce(throwError)
       const httpresponse = await sut.handle({})
       expect(httpresponse).toEqual(created())

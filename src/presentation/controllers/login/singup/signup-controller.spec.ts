@@ -122,13 +122,13 @@ describe('SignUp Controller', () => {
     })
     it('Should return 403 if AddAccount returns null', async () => {
         const { sut, addAccountStub } = makeSut()
-        // jest.spyOn(addAccountStub, 'add').mockReturnValueOnce(new Promise(resolve => resolve(null)))
+        // jest.spyOn(addAccountStub, 'add').mockReturnValueOnce(Promise.resolve(null))
         // When trying to mock a value with a new Promise, It required a type 'void | PromiseLike<null>, so in this case I need to mock the Promise type as null.
         const addAccountStubSpy = jest.spyOn(addAccountStub, 'add') as unknown as jest.Mock<
             ReturnType<(key: null) => Promise<null>>,
             Parameters<(key: null) => Promise<null>>
         >
-        addAccountStubSpy.mockReturnValueOnce(new Promise(_resolve => _resolve(null)))
+        addAccountStubSpy.mockReturnValueOnce(Promise.resolve(null))
         const httpResponse = await sut.handle(mockRequest())
         expect(httpResponse).toEqual(forbidden(new ParamInUseError('email')))
     })
