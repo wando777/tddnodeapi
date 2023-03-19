@@ -24,10 +24,10 @@ export const loginPath = {
         }
       },
       400: {
-        description: 'Bad request. The request has returned as invalid'
+        $ref: '#/components/badRequest'
       },
-      default: {
-        description: 'Unexpected error'
+      500: {
+        $ref: '#/components/serverError'
       }
     }
   }
