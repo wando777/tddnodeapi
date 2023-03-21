@@ -26,6 +26,21 @@ export const surveySchema = {
   }
 }
 
+export const surveyParamsSchema = {
+  type: 'object',
+  properties: {
+    questions: {
+      type: 'string'
+    },
+    answers: {
+      type: 'array',
+      items: {
+        $ref: '#/schemas/surveyAnswer'
+      }
+    }
+  }
+}
+
 export const surveyAnswer = {
   type: 'object',
   properties: {
