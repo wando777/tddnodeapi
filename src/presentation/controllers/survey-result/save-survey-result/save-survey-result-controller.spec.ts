@@ -2,7 +2,7 @@ import { InvalidParamError } from '@/presentation/errors'
 import { badRequest, notFound, ok, serverError } from '@/presentation/helpers/http/http-helper'
 import { SaveSurveyResultController } from './save-survey-result-controller'
 import { HttpRequest, SaveSurveyResult, LoadSurveyById } from './save-survey-result-controller-protocols'
-import { mockSurveyResultModel, throwError } from '@/domain/test'
+import { mockSaveSurveyResultParams, mockSurveyResultModel, throwError } from '@/domain/test'
 import { mockLoadSurveyById, mockSaveSurveyResult } from '@/presentation/test'
 import MockDate from 'mockdate'
 
@@ -71,8 +71,7 @@ describe('SaveSurveyResult Controller', () => {
     const { sut, saveSurveyResultStub } = makeSut()
     const saveSurveySpy = jest.spyOn(saveSurveyResultStub, 'save')
     await sut.handle(mockRequest())
-    const { id, ...makeFakeSaveSurveyResult } = mockSurveyResultModel()
-    expect(saveSurveySpy).toHaveBeenCalledWith(makeFakeSaveSurveyResult)
+    expect(saveSurveySpy).toHaveBeenCalledWith(mockSaveSurveyResultParams())
   })
   it('Should return 500 if SaveSurveyResult throws', async () => {
     const { sut, saveSurveyResultStub } = makeSut()
