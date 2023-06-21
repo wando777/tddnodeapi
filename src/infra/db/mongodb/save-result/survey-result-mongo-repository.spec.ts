@@ -4,7 +4,7 @@ import { mockAddAccountParams, mockSurveyAddParams } from '@/domain/test';
 import { SaveSurveyResultParams } from '@/domain/usecases/survey-result/save-survey-result';
 import { SurveyResultMongoRepository } from './survey-result-mongo-repository';
 import { MongoHelper } from '../helpers/mongo-helper';
-import { Collection } from 'mongodb';
+import { Collection, ObjectId } from 'mongodb';
 import env from '@/main/config/env';
 
 let surveyCollection: Collection
@@ -68,25 +68,47 @@ describe('Survey Result Mongo Repository', () => {
             expect(surveyResult.answers[0].count).toBe(1)
             expect(surveyResult.answers[0].percent).toBe(100)
         })
-        it('Should update survey on success', async () => {
+        // it('Should update survey on success', async () => {
+        //     const sut = makeSut()
+        //     const surveyResultData = await makeFakeSurveyResultData()
+        //     const res = await surveyResultsCollection.insertOne(surveyResultData) // Inserting a suvery result into the data base
+        //     const resultFind = await surveyResultsCollection.findOne(res.insertedId)
+        //     // const firstSurveyResultData = resultFind && MongoHelper.map(resultFind)
+        //     // const updated = Object.assign(surveyResultData, surveyResultData.answer, 'updated_answer') // Updating my survey data result with a new answer
+        //     // const surveyResult = await sut.saveResult(updated)
+        //     const surveyResult = await sut.saveResult({
+        //         surveyId: surveyResultData.surveyId,
+        //         userId: surveyResultData.userId,
+        //         answer: 'updated_answer',
+        //         date: new Date()
+        //     })
+        //     expect(surveyResult).toBeTruthy()
+        //     expect(surveyResult.surveyId).toEqual(resultFind.surveyId)
+        //     expect(surveyResult.answers[0]).toBe(resultFind.answers[1].answer)
+        //     expect(surveyResult.answers[0].count).toBe(1)
+        //     expect(surveyResult.answers[0].percent).toBe(100)
+        // })
+        test('Should update survey result if its not new', async () => {
+            const survey = await makeFakeSurvey()
+            const account = await makeFakeAccount()
+            await surveyResultsCollection.insertOne({
+              surveyId: new ObjectId(survey.id),
+              userId: new ObjectId(account.id),
+              answer: survey.answers[0].answer,
+              date: new Date()
+            })
             const sut = makeSut()
-            const surveyResultData = await makeFakeSurveyResultData()
-            const res = await surveyResultsCollection.insertOne(surveyResultData) // Inserting a suvery result into the data base
-            const resultFind = await surveyResultsCollection.findOne(res.insertedId)
-            // const firstSurveyResultData = resultFind && MongoHelper.map(resultFind)
-            // const updated = Object.assign(surveyResultData, surveyResultData.answer, 'updated_answer') // Updating my survey data result with a new answer
-            // const surveyResult = await sut.saveResult(updated)
             const surveyResult = await sut.saveResult({
-                surveyId: surveyResultData.surveyId,
-                userId: surveyResultData.userId,
-                answer: 'updated_answer',
-                date: new Date()
+              surveyId: survey.id,
+              userId: account.id,
+              answer: survey.answers[1].answer,
+              date: new Date()
             })
             expect(surveyResult).toBeTruthy()
-            expect(surveyResult.surveyId).toEqual(resultFind.surveyId)
-            expect(surveyResult.answers[0]).toBe(resultFind.answers[1].answer)
+            expect(surveyResult.surveyId).toEqual(survey.id)
+            expect(surveyResult.answers[0].answer).toBe(survey.answers[1].answer)
             expect(surveyResult.answers[0].count).toBe(1)
             expect(surveyResult.answers[0].percent).toBe(100)
-        })
+          })
     })
 })
