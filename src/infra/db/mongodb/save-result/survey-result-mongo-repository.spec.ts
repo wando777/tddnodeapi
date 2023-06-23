@@ -94,17 +94,17 @@ describe('Survey Result Mongo Repository', () => {
             const survey = await makeFakeSurvey()
             const account = await makeFakeAccount()
             await surveyResultsCollection.insertOne({
-              surveyId: new ObjectId(survey.id),
-              userId: new ObjectId(account.id),
-              answer: survey.answers[0].answer,
-              date: new Date()
+                surveyId: new ObjectId(survey.id),
+                userId: new ObjectId(account.id),
+                answer: survey.answers[0].answer,
+                date: new Date()
             })
             const sut = makeSut()
             const surveyResult = await sut.saveResult({
-              surveyId: survey.id,
-              userId: account.id,
-              answer: survey.answers[1].answer,
-              date: new Date()
+                surveyId: survey.id,
+                userId: account.id,
+                answer: survey.answers[1].answer,
+                date: new Date()
             })
             expect(surveyResult).toBeTruthy()
             expect(surveyResult.surveyId).toEqual(survey.id)
@@ -113,6 +113,45 @@ describe('Survey Result Mongo Repository', () => {
             expect(surveyResult.answers[0].percent).toBe(100)
             expect(surveyResult.answers[1].count).toBe(0)
             expect(surveyResult.answers[1].percent).toBe(0)
-          })
+        })
+    })
+
+    describe('loadBySurveyId()', () => {
+        test('Should load survey result', async () => {
+            const survey = await makeFakeSurvey()
+            const account = await makeFakeAccount()
+            await surveyResultsCollection.insertMany([{
+                surveyId: new ObjectId(survey.id),
+                userId: new ObjectId(account.id),
+                answer: survey.answers[0].answer,
+                date: new Date()
+            },
+            {
+                surveyId: new ObjectId(survey.id),
+                userId: new ObjectId(account.id),
+                answer: survey.answers[0].answer,
+                date: new Date()
+            },
+            {
+                surveyId: new ObjectId(survey.id),
+                userId: new ObjectId(account.id),
+                answer: survey.answers[0].answer,
+                date: new Date()
+            },
+            {
+                surveyId: new ObjectId(survey.id),
+                userId: new ObjectId(account.id),
+                answer: survey.answers[1].answer,
+                date: new Date()
+            }])
+            const sut = makeSut()
+            const surveyResult = await sut.loadBySurveyId(survey.id)
+            expect(surveyResult).toBeTruthy()
+            expect(surveyResult.surveyId).toEqual(survey.id)
+            expect(surveyResult.answers[0].count).toBe(3)
+            expect(surveyResult.answers[0].percent).toBe(75)
+            expect(surveyResult.answers[1].count).toBe(1)
+            expect(surveyResult.answers[1].percent).toBe(25)
+        })
     })
 })
