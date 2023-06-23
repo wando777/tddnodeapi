@@ -4,7 +4,7 @@ import { mockAddAccountParams, mockSurveyAddParams } from '@/domain/test';
 import { SaveSurveyResultParams } from '@/domain/usecases/survey-result/save-survey-result';
 import { SurveyResultMongoRepository } from './survey-result-mongo-repository';
 import { MongoHelper } from '../helpers/mongo-helper';
-import { Collection } from 'mongodb';
+import { Collection, ObjectId } from 'mongodb';
 import env from '@/main/config/env';
 
 let surveyCollection: Collection
@@ -65,26 +65,93 @@ describe('Survey Result Mongo Repository', () => {
             const surveyResultData = await makeFakeSurveyResultData()
             const surveyResult = await sut.saveResult(surveyResultData)
             expect(surveyResult).toBeTruthy()
-            expect(surveyResult.id).toBeTruthy()
-            expect(surveyResult.userId).toEqual(surveyResultData.userId)
+            expect(surveyResult.answers[0].count).toBe(1)
+            expect(surveyResult.answers[0].percent).toBe(100)
+            expect(surveyResult.answers[1].count).toBe(0)
+            expect(surveyResult.answers[1].percent).toBe(0)
         })
-        it('Should update survey on success', async () => {
+        // it('Should update survey on success', async () => {
+        //     const sut = makeSut()
+        //     const surveyResultData = await makeFakeSurveyResultData()
+        //     const res = await surveyResultsCollection.insertOne(surveyResultData) // Inserting a suvery result into the data base
+        //     const resultFind = await surveyResultsCollection.findOne(res.insertedId)
+        //     // const firstSurveyResultData = resultFind && MongoHelper.map(resultFind)
+        //     // const updated = Object.assign(surveyResultData, surveyResultData.answer, 'updated_answer') // Updating my survey data result with a new answer
+        //     // const surveyResult = await sut.saveResult(updated)
+        //     const surveyResult = await sut.saveResult({
+        //         surveyId: surveyResultData.surveyId,
+        //         userId: surveyResultData.userId,
+        //         answer: 'updated_answer',
+        //         date: new Date()
+        //     })
+        //     expect(surveyResult).toBeTruthy()
+        //     expect(surveyResult.surveyId).toEqual(resultFind.surveyId)
+        //     expect(surveyResult.answers[0]).toBe(resultFind.answers[1].answer)
+        //     expect(surveyResult.answers[0].count).toBe(1)
+        //     expect(surveyResult.answers[0].percent).toBe(100)
+        // })
+        test('Should update survey result if its not new', async () => {
+            const survey = await makeFakeSurvey()
+            const account = await makeFakeAccount()
+            await surveyResultsCollection.insertOne({
+                surveyId: new ObjectId(survey.id),
+                userId: new ObjectId(account.id),
+                answer: survey.answers[0].answer,
+                date: new Date()
+            })
             const sut = makeSut()
-            const surveyResultData = await makeFakeSurveyResultData()
-            const res = await surveyResultsCollection.insertOne(surveyResultData) // Inserting a suvery result into the data base
-            const resultFind = await surveyResultsCollection.findOne(res.insertedId)
-            // const firstSurveyResultData = resultFind && MongoHelper.map(resultFind)
-            // const updated = Object.assign(surveyResultData, surveyResultData.answer, 'updated_answer') // Updating my survey data result with a new answer
-            // const surveyResult = await sut.saveResult(updated)
             const surveyResult = await sut.saveResult({
-                surveyId: surveyResultData.surveyId,
-                userId: surveyResultData.userId,
-                answer: 'updated_answer',
+                surveyId: survey.id,
+                userId: account.id,
+                answer: survey.answers[1].answer,
                 date: new Date()
             })
             expect(surveyResult).toBeTruthy()
-            expect(surveyResult.id).toEqual(resultFind._id)
-            expect(surveyResult.answer).toEqual('updated_answer')
+            expect(surveyResult.surveyId).toEqual(survey.id)
+            expect(surveyResult.answers[0].answer).toBe(survey.answers[1].answer)
+            expect(surveyResult.answers[0].count).toBe(1)
+            expect(surveyResult.answers[0].percent).toBe(100)
+            expect(surveyResult.answers[1].count).toBe(0)
+            expect(surveyResult.answers[1].percent).toBe(0)
+        })
+    })
+
+    describe('loadBySurveyId()', () => {
+        test('Should load survey result', async () => {
+            const survey = await makeFakeSurvey()
+            const account = await makeFakeAccount()
+            await surveyResultsCollection.insertMany([{
+                surveyId: new ObjectId(survey.id),
+                userId: new ObjectId(account.id),
+                answer: survey.answers[0].answer,
+                date: new Date()
+            },
+            {
+                surveyId: new ObjectId(survey.id),
+                userId: new ObjectId(account.id),
+                answer: survey.answers[0].answer,
+                date: new Date()
+            },
+            {
+                surveyId: new ObjectId(survey.id),
+                userId: new ObjectId(account.id),
+                answer: survey.answers[0].answer,
+                date: new Date()
+            },
+            {
+                surveyId: new ObjectId(survey.id),
+                userId: new ObjectId(account.id),
+                answer: survey.answers[1].answer,
+                date: new Date()
+            }])
+            const sut = makeSut()
+            const surveyResult = await sut.loadBySurveyId(survey.id)
+            expect(surveyResult).toBeTruthy()
+            expect(surveyResult.surveyId).toEqual(survey.id)
+            expect(surveyResult.answers[0].count).toBe(3)
+            expect(surveyResult.answers[0].percent).toBe(75)
+            expect(surveyResult.answers[1].count).toBe(1)
+            expect(surveyResult.answers[1].percent).toBe(25)
         })
     })
 })

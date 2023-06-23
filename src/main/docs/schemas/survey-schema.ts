@@ -53,6 +53,25 @@ export const surveyAnswerSchema = {
   }
 }
 
+export const surveyResultAnswerSchema = {
+  type: 'object',
+  properties: {
+    image: {
+      type: 'string'
+    },
+    answer: {
+      type: 'string'
+    },
+    count: {
+      type: 'number'
+    },
+    percent: {
+      type: 'number'
+    }
+  },
+  required: ['answer', 'count', 'percent']
+}
+
 export const saveSurveyParamsSchema = {
   type: 'object',
   properties: {
@@ -65,20 +84,21 @@ export const saveSurveyParamsSchema = {
 export const surveyResultSchema = {
   type: 'object',
   properties: {
-    id: {
-      type: 'string'
-    },
     surveyId: {
       type: 'string'
     },
-    accountId: {
+    question: {
       type: 'string'
     },
-    answer: {
-      type: 'string'
+    answers: {
+      type: 'array',
+      items: {
+        $ref: '#/schemas/surveyResultAnswer'
+      }
     },
     date: {
       type: 'string'
     }
-  }
+  },
+  required: ['surveyId', 'question', 'answers', 'date']
 }
