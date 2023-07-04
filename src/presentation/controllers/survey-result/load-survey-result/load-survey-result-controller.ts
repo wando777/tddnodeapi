@@ -15,8 +15,8 @@ export class LoadSurveyResultController implements Controller {
       if (!survey) {
         return forbidden(new InvalidParamError('Survey not found'))
       }
-      await this.loadSurveyResult.load(surveyId)
-      return ok(survey)
+      const surveyResult = await this.loadSurveyResult.load(surveyId)
+      return ok(surveyResult)
     } catch (error: any) {
       return serverError(error)
     }
