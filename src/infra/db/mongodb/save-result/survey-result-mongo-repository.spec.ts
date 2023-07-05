@@ -63,12 +63,12 @@ describe('Survey Result Mongo Repository', () => {
         it('Should return true on save survey success', async () => {
             const sut = makeSut()
             const surveyResultData = await makeFakeSurveyResultData()
-            const surveyResult = await sut.saveResult(surveyResultData)
+            await sut.saveResult(surveyResultData)
+            const surveyResult = await surveyResultsCollection.findOne({
+                surveyId: surveyResultData.surveyId,
+                userId: surveyResultData.userId
+            })
             expect(surveyResult).toBeTruthy()
-            expect(surveyResult.answers[0].count).toBe(1)
-            expect(surveyResult.answers[0].percent).toBe(100)
-            expect(surveyResult.answers[1].count).toBe(0)
-            expect(surveyResult.answers[1].percent).toBe(0)
         })
         // it('Should update survey on success', async () => {
         //     const sut = makeSut()
@@ -100,19 +100,18 @@ describe('Survey Result Mongo Repository', () => {
                 date: new Date()
             })
             const sut = makeSut()
-            const surveyResult = await sut.saveResult({
+            await sut.saveResult({
                 surveyId: survey.id,
                 userId: account.id,
                 answer: survey.answers[1].answer,
                 date: new Date()
             })
+            const surveyResult = await surveyResultsCollection.find({
+                surveyId: survey.id,
+                userId: account.id
+            }).toArray()
             expect(surveyResult).toBeTruthy()
-            expect(surveyResult.surveyId).toEqual(survey.id)
-            expect(surveyResult.answers[0].answer).toBe(survey.answers[1].answer)
-            expect(surveyResult.answers[0].count).toBe(1)
-            expect(surveyResult.answers[0].percent).toBe(100)
-            expect(surveyResult.answers[1].count).toBe(0)
-            expect(surveyResult.answers[1].percent).toBe(0)
+            expect(surveyResult.length).toBe(1)
         })
     })
 

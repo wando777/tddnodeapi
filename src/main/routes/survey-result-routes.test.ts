@@ -27,15 +27,16 @@ const makeAccessToken = async (): Promise<string> => {
     return accessToken
 }
 
+const makeFakeSurvey = (): AddSurveyParams => ({
+    question: 'Question 1',
+    answers: [{
+        answer: 'any_answer',
+        image: 'http://image-name.com'
+    }],
+    date: new Date()
+})
+
 describe('Survey Result Routes', () => {
-    const makeFakeSurvey = (): AddSurveyParams => ({
-        question: 'Question 1',
-        answers: [{
-            answer: 'any_answer',
-            image: 'http://image-name.com'
-        }],
-        date: new Date()
-    })
     beforeAll(async () => {
         await MongoHelper.connect(env.mongoUrl)
     });
@@ -75,31 +76,19 @@ describe('Survey Result Routes', () => {
         //         .expect(403)
         // })
     })
-    // describe('GET /survey', () => {
-    //     it('Should return 403 on load survey without accessToken', async () => {
-    //         await request(app)
-    //             .get('/api/survey')
-    //             .expect(403)
-    //     })
-    //     it('Should return 204 on load survey with valid accessToken but there is no survey', async () => {
-    //         const accessToken = await makeAccessToken()
-    //         await request(app)
-    //             .get('/api/survey')
-    //             .set('x-access-token', accessToken)
-    //             .expect(204)
-    //     })
-    //     it('Should return 200 on load survey with valid accessToken', async () => {
-    //         await surveyCollection.insertOne(makeFakeSurvey())
-    //         await request(app)
-    //             .get('/api/survey')
-    //             .set('x-access-token', await makeAccessToken())
-    //             .expect(200)
-    //     })
-    //     // it('Should return 403 on add survey with an invalid accessToken', async () => {
-    //     //     await request(app)
-    //     //         .post('/api/survey')
-    //     //         .send(makeFakeSurvey())
-    //     //         .expect(403)
-    //     // })
-    // })
+    describe('GET /survey/:surveyId/result', () => {
+        it('Should return 403 on load survey without accessToken', async () => {
+            await request(app)
+                .get('/api/survey/any_id/result')
+                .expect(403)
+        })
+        it('Should return 200 on load survey result with valid accessToken', async () => {
+            const res = await surveyCollection.insertOne(makeFakeSurvey())
+            const survey = await surveyCollection.findOne(res.insertedId)
+            await request(app)
+                .get(`/api/survey/${survey._id}/result`)
+                .set('x-access-token', await makeAccessToken())
+                .expect(200)
+        })
+    })
 })
